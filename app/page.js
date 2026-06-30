@@ -45,7 +45,7 @@ export default function HomePage() {
               fontFamily: "'Inter', sans-serif", fontSize: 15.5, lineHeight: 1.65,
               color: "rgba(230,230,230,0.55)", maxWidth: 440, margin: "0 0 28px",
             }}>
-              Strata runs your DCA strategy across price zones, relentlessly
+              Zilla Engine runs your DCA strategy across price zones, relentlessly
               and without emotion. Every pullback becomes another layer in your position.
             </p>
             <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>

@@ -1,7 +1,7 @@
 import Sidebar from "../components/Sidebar";
 
 export const metadata = {
-  title: "Strata",
+  title: "Zilla Engine",
   description: "Automated DCA accumulation engine",
 };
 

@@ -32,18 +32,18 @@ export default function Sidebar() {
     >
       <div>
         {/* Brand */}
-        <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "22px 20px", overflow: "hidden" }}>
-          <span style={{ display: "flex", alignItems: "flex-end", gap: 2, height: 16, flexShrink: 0 }}>
-            <span style={{ width: 4, height: 6, background: "#C0C0C0", display: "block" }} />
-            <span style={{ width: 4, height: 10, background: "#C0C0C0", display: "block" }} />
-            <span style={{ width: 4, height: 16, background: "#C0C0C0", display: "block" }} />
-          </span>
-          {!collapsed && (
-            <span style={{ fontFamily: "'Newsreader', serif", fontSize: 19, fontWeight: 600, color: "#F2F2F2", whiteSpace: "nowrap" }}>
-              Strata
-            </span>
-          )}
-        </div>
+<div style={{ display: "flex", alignItems: "center", gap: 10, padding: "22px 20px", overflow: "hidden" }}>
+  <img
+    src="/logozillaengine.png"
+    alt="Zilla Engine"
+    style={{ width: 28, height: 28, objectFit: "contain", flexShrink: 0 }}
+  />
+  {!collapsed && (
+    <span style={{ fontFamily: "'Newsreader', serif", fontSize: 19, fontWeight: 600, color: "#F2F2F2", whiteSpace: "nowrap" }}>
+      Zilla Engine
+    </span>
+  )}
+</div>
 
         {/* Nav */}
         <nav style={{ padding: "10px 12px", display: "flex", flexDirection: "column", gap: 4 }}>
