@@ -7,6 +7,7 @@ const NAV_ITEMS = [
   { href: "/", label: "Dashboard", icon: "▦" },
   { href: "/bot", label: "DCA Bot", icon: "⟳" },
   { href: "/profile", label: "Profile", icon: "◔" },
+  { href: "/settings", label: "Settings", icon: "⚙" },
 ];
 
 export default function Sidebar() {
@@ -96,7 +97,7 @@ export default function Sidebar() {
             fontSize: 13,
           }}
         >
-          {collapsed ? "›" : "‹ Collapse"}
+          {collapsed ? "›" : "‹"}
         </button>
       </div>
     </aside>
