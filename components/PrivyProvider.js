@@ -6,7 +6,7 @@ export default function PrivyAppProvider({ children }) {
     <PrivyProvider
       appId="cmsc7gasg003a0djp14syrr8a"
       config={{
-        loginMethods: ["email", "wallet", "google", "twitter"],
+        loginMethods: ["email", "wallet"],
         appearance: {
           theme: "dark",
           accentColor: "#C0C0C0",

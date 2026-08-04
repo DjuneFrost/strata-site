@@ -1,4 +1,4 @@
-import Sidebar from "../components/Sidebar";
+import Navbar from "../components/Navbar";
 import PrivyAppProvider from "../components/PrivyProvider";
 
 export const metadata = {
@@ -11,10 +11,10 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body style={{ margin: 0, background: "#080808" }}>
         <PrivyAppProvider>
-          <div style={{ display: "flex", minHeight: "100vh" }}>
-            <Sidebar />
-            <main style={{ flex: 1, minWidth: 0 }}>{children}</main>
-          </div>
+          <Navbar />
+          <main style={{ paddingTop: 64 }}>
+            {children}
+          </main>
         </PrivyAppProvider>
       </body>
     </html>
