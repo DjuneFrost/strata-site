@@ -1,6 +1,15 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 
+const ASSETS = [
+  { label: "SOL", full: "Solana (SOL)" },
+  { label: "BTC", full: "Bitcoin (BTC)" },
+  { label: "HYPE", full: "Hyperliquid (HYPE)" },
+  { label: "NEAR", full: "NEAR Protocol (NEAR)" },
+  { label: "ZEC", full: "Zcash (ZEC)" },
+  { label: "XAU", full: "Gold (XAU)" },
+];
+
 async function fetchSolPrice() {
   try {
     const res = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=solana&vs_currencies=usd&include_24hr_change=true");
@@ -47,7 +56,6 @@ function runBacktest(prices, zones, capital, exposure) {
   return { orders, deployed, totalBought, totalSpent, currentValue, pnl, pnlPct, avgEntry, finalPrice };
 }
 
-// ---- Strata palette ----
 const C = {
   silver: "#C0C0C0",
   silverBright: "#F2F2F2",
@@ -59,7 +67,6 @@ const C = {
   text: "#E6E6E6",
   textDim: "rgba(230,230,230,0.4)",
   textFaint: "rgba(230,230,230,0.25)",
-  green: "#D8D8D8",   // success/positive — kept neutral (silver-white) per black & silver palette
   red: "#ff6b6b",
 };
 
@@ -135,7 +142,6 @@ export default function BotPage() {
     return pctFromHigh >= z.pullback;
   });
 
-  // TODO: replace with a real Supabase insert once wallet + database are wired up
   const handleSaveStrategy = () => {
     if (!strategyName) { showToast("⚠️ Enter a strategy name first!"); return; }
     setSaving(true);
@@ -166,6 +172,8 @@ export default function BotPage() {
   const totalAlloc = zones.reduce((s, z) => s + Number(z.alloc), 0);
   const maxDeploy = ((capital * exposure) / 100).toFixed(0);
   const anyTriggerActive = triggers.some(Boolean);
+  const currentAssetLabel = ASSETS.find(a => a.full === asset)?.label || "SOL";
+  const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const Toggle = ({ val, set }) => (
     <div onClick={() => set(!val)} style={{ width: 44, height: 24, background: val ? "rgba(192,192,192,0.5)" : "rgba(255,255,255,0.1)", borderRadius: 12, cursor: "pointer", position: "relative", flexShrink: 0, transition: "background 0.2s", border: `1px solid ${val ? "rgba(192,192,192,0.6)" : "rgba(255,255,255,0.1)"}` }}>
@@ -177,7 +185,7 @@ export default function BotPage() {
     return (
       <>
         <style>{`@import url('https://fonts.googleapis.com/css2?family=Newsreader:wght@500;600&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');`}</style>
-        <div style={{ padding: "32px 36px", color: C.text }}>
+        <div style={{ padding: "32px 4vw 60px", color: C.text, maxWidth: 1400, margin: "0 auto" }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 28, flexWrap: "wrap", gap: 14 }}>
             <div>
               <h1 style={{ fontFamily: "'Newsreader', serif", fontSize: 26, fontWeight: 600, color: C.silverBright, margin: 0 }}>DCA Bot</h1>
@@ -248,12 +256,16 @@ export default function BotPage() {
         .trigger-mode-btn:hover { background: rgba(255,255,255,0.04); }
         .trigger-mode-btn.selected { border-color: rgba(192,192,192,0.45); background: rgba(192,192,192,0.06); }
         .bot-divider { height: 1px; background: rgba(255,255,255,0.05); margin: 14px -20px; }
+        .asset-btn { font-family: 'IBM Plex Mono', monospace; font-size: 11px; padding: 5px 10px; border-radius: 6px; cursor: pointer; transition: all 0.15s; }
+        .asset-btn.active { border: 1px solid rgba(192,192,192,0.4); background: rgba(192,192,192,0.12); color: #F2F2F2; }
+        .asset-btn.inactive { border: 1px solid rgba(255,255,255,0.1); background: transparent; color: rgba(230,230,230,0.35); }
+        .asset-btn:hover { border-color: rgba(192,192,192,0.3); color: #F2F2F2; }
         @keyframes pulse-silver { 0%,100%{box-shadow:0 0 0 0 rgba(192,192,192,0.35);}50%{box-shadow:0 0 0 8px rgba(192,192,192,0);} }
         .zone-active { animation: pulse-silver 1.5s infinite; border-color: rgba(192,192,192,0.5) !important; background: rgba(192,192,192,0.06) !important; }
-        @media(max-width:768px){ .row2{grid-template-columns:1fr !important;} .zone-row{grid-template-columns:1fr !important;} .stats-grid{grid-template-columns:1fr 1fr !important;} }
+        @media(max-width:768px){ .row2{grid-template-columns:1fr !important;} .zone-row{grid-template-columns:1fr !important;} }
       `}</style>
 
-      <div style={{ padding: "28px 36px 60px", color: C.text }}>
+      <div style={{ padding: "28px 36px 60px", color: C.text, maxWidth: 900, margin: "0 auto" }}>
 
         <div style={{ marginBottom: 20 }}>
           <button onClick={() => setShowConfigurator(false)} style={{ background: "none", border: "none", color: C.textDim, fontFamily: "'Inter', sans-serif", fontSize: 13, cursor: "pointer", padding: 0, marginBottom: 14 }}>
@@ -266,27 +278,52 @@ export default function BotPage() {
           <div style={{ color: C.textDim, fontSize: 13, fontFamily: "'Inter', sans-serif" }}>Structure-based accumulation — spot only, capital-protected, volatility-aware</div>
         </div>
 
-        {/* LIVE PRICE */}
-        <div className="bot-card" style={{ marginBottom: 16, padding: "16px 20px", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 12 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-            <img src="https://assets.coingecko.com/coins/images/4128/small/solana.png" style={{ width: 36, height: 36, borderRadius: "50%" }} alt="SOL" />
-            <div>
-              <div style={{ fontSize: 11, color: C.textFaint, marginBottom: 2, fontFamily: "'Inter', sans-serif" }}>SOL / USD — Live</div>
-              <div style={{ display: "flex", alignItems: "baseline", gap: 10 }}>
-                <span style={{ fontFamily: "'Newsreader', serif", fontSize: 26, fontWeight: 600, color: priceDir === "up" ? C.silverBright : priceDir === "down" ? C.red : "#fff", transition: "color 0.4s" }}>
-                  ${solPrice > 0 ? solPrice.toFixed(2) : "—"}
-                </span>
-                {solChange24h !== 0 && (
-                  <span style={{ fontSize: 13, fontWeight: 600, color: solChange24h >= 0 ? C.silverBright : C.red, fontFamily: "'Inter', sans-serif" }}>
-                    {solChange24h >= 0 ? "▲" : "▼"} {Math.abs(solChange24h).toFixed(2)}%
-                  </span>
+        {/* LIVE PRICE + ASSET SWITCHER */}
+        <div className="bot-card" style={{ marginBottom: 16, padding: "16px 20px" }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 12 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+              {/* Logo + dropdown arrow */}
+              <div style={{ position: "relative" }}>
+                <img src="https://assets.coingecko.com/coins/images/4128/small/solana.png" style={{ width: 36, height: 36, borderRadius: "50%" }} alt={currentAssetLabel} />
+                <button
+                  onClick={() => setDropdownOpen(!dropdownOpen)}
+                  style={{ position: "absolute", bottom: -4, right: -6, width: 16, height: 16, borderRadius: "50%", background: "#1a1a1a", border: "1px solid rgba(192,192,192,0.3)", color: C.silver, fontSize: 8, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", padding: 0 }}
+                >
+                  {dropdownOpen ? "▲" : "▼"}
+                </button>
+                {dropdownOpen && (
+                  <div style={{ position: "absolute", top: 44, left: 0, background: "#1a1a1a", border: "1px solid rgba(192,192,192,0.2)", borderRadius: 10, overflow: "hidden", zIndex: 50, minWidth: 190, boxShadow: "0 8px 32px rgba(0,0,0,0.6)" }}>
+                    {ASSETS.map(a => (
+                      <button
+                        key={a.label}
+                        onClick={() => { setAsset(a.full); setDropdownOpen(false); }}
+                        style={{ width: "100%", padding: "10px 14px", background: asset === a.full ? "rgba(192,192,192,0.1)" : "transparent", border: "none", borderBottom: "1px solid rgba(255,255,255,0.05)", color: asset === a.full ? C.silverBright : C.textDim, fontFamily: "'Inter', sans-serif", fontSize: 13, fontWeight: asset === a.full ? 600 : 400, cursor: "pointer", textAlign: "left", display: "flex", alignItems: "center", justifyContent: "space-between" }}
+                      >
+                        {a.full}
+                        {asset === a.full && <span style={{ color: C.silver }}>✓</span>}
+                      </button>
+                    ))}
+                  </div>
                 )}
               </div>
+              <div>
+                <div style={{ fontSize: 11, color: C.textFaint, marginBottom: 2, fontFamily: "'Inter', sans-serif" }}>{currentAssetLabel} / USD — Live</div>
+                <div style={{ display: "flex", alignItems: "baseline", gap: 10 }}>
+                  <span style={{ fontFamily: "'Newsreader', serif", fontSize: 26, fontWeight: 600, color: priceDir === "up" ? C.silverBright : priceDir === "down" ? C.red : "#fff", transition: "color 0.4s" }}>
+                    ${solPrice > 0 ? solPrice.toFixed(2) : "—"}
+                  </span>
+                  {solChange24h !== 0 && (
+                    <span style={{ fontSize: 13, fontWeight: 600, color: solChange24h >= 0 ? C.silverBright : C.red, fontFamily: "'Inter', sans-serif" }}>
+                      {solChange24h >= 0 ? "▲" : "▼"} {Math.abs(solChange24h).toFixed(2)}%
+                    </span>
+                  )}
+                </div>
+              </div>
             </div>
-          </div>
-          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <div style={{ width: 8, height: 8, borderRadius: "50%", background: C.silver, boxShadow: "0 0 8px rgba(192,192,192,0.6)" }} />
-            <span style={{ fontSize: 11, color: C.textFaint, fontFamily: "'Inter', sans-serif" }}>Updates every 5s</span>
+            <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+              <div style={{ width: 7, height: 7, borderRadius: "50%", background: C.silver, boxShadow: "0 0 8px rgba(192,192,192,0.6)" }} />
+              <span style={{ fontSize: 11, color: C.textFaint, fontFamily: "'Inter', sans-serif" }}>Updates every 5s</span>
+            </div>
           </div>
         </div>
 
@@ -297,14 +334,36 @@ export default function BotPage() {
             <div style={{ width: 34, height: 34, background: "rgba(192,192,192,0.1)", borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 17, flexShrink: 0 }}>⚡</div>
             <div style={{ flex: 1 }}>
               <div style={{ fontWeight: 600, fontSize: 13, color: "#fff", marginBottom: 2, fontFamily: "'Inter', sans-serif" }}>Suggested preset</div>
-              <div style={{ fontSize: 11, color: C.textFaint, marginBottom: 8, fontFamily: "'Inter', sans-serif" }}>A balanced capital-protection DCA model for structured pullbacks in trending markets.</div>
+              <div style={{ fontSize: 11, color: C.textFaint, fontFamily: "'Inter', sans-serif" }}>A balanced capital-protection DCA model for structured pullbacks in trending markets.</div>
             </div>
             <button onClick={activatePreset} style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.2)", color: "#fff", fontFamily: "'Inter', sans-serif", fontSize: 13, fontWeight: 600, padding: "8px 18px", borderRadius: 8, cursor: "pointer", whiteSpace: "nowrap", flexShrink: 0 }}>⚡ Apply</button>
           </div>
           <div className="bot-divider" />
           <div className="row2">
             <div className="field-group"><label className="bot-label">Strategy Name</label><input type="text" className="bot-input" placeholder="e.g. SOL Accumulator" value={strategyName} onChange={e => setStrategyName(e.target.value)} /></div>
-            <div className="field-group"><label className="bot-label">Asset</label><select className="bot-select" value={asset} onChange={e => setAsset(e.target.value)}><option>Solana (SOL)</option></select></div>
+<div className="field-group" style={{ position: "relative" }}>
+  <label className="bot-label">Asset</label>
+  <button
+    onClick={() => setDropdownOpen(!dropdownOpen)}
+    style={{ width: "100%", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 10, color: "#fff", fontFamily: "'Inter', sans-serif", fontSize: 13, padding: "10px 14px", cursor: "pointer", textAlign: "left", display: "flex", alignItems: "center", justifyContent: "space-between" }}
+  >
+    {asset} <span style={{ color: C.textFaint, fontSize: 10 }}>{dropdownOpen ? "▲" : "▼"}</span>
+  </button>
+  {dropdownOpen && (
+    <div style={{ position: "absolute", top: "100%", left: 0, right: 0, background: "#1a1a1a", border: "1px solid rgba(192,192,192,0.2)", borderRadius: 10, overflow: "hidden", zIndex: 50, boxShadow: "0 8px 32px rgba(0,0,0,0.6)", marginTop: 4 }}>
+      {ASSETS.map(a => (
+        <button
+          key={a.label}
+          onClick={() => { setAsset(a.full); setDropdownOpen(false); }}
+          style={{ width: "100%", padding: "10px 14px", background: asset === a.full ? "rgba(192,192,192,0.1)" : "transparent", border: "none", borderBottom: "1px solid rgba(255,255,255,0.05)", color: asset === a.full ? C.silverBright : C.textDim, fontFamily: "'Inter', sans-serif", fontSize: 13, fontWeight: asset === a.full ? 600 : 400, cursor: "pointer", textAlign: "left", display: "flex", alignItems: "center", justifyContent: "space-between" }}
+        >
+          {a.full}
+          {asset === a.full && <span style={{ color: C.silver }}>✓</span>}
+        </button>
+      ))}
+    </div>
+  )}
+</div>
           </div>
           <div className="bot-inner-box">
             <div style={{ fontSize: 12, fontWeight: 600, color: "rgba(255,255,255,0.5)", marginBottom: 12, fontFamily: "'Inter', sans-serif" }}>Capital Management</div>
@@ -327,7 +386,7 @@ export default function BotPage() {
           {solPrice > 0 && (
             <div style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.06)", borderRadius: 10, padding: "10px 14px", marginBottom: 12, fontSize: 12, color: C.textFaint, display: "flex", alignItems: "center", gap: 8, fontFamily: "'Inter', sans-serif" }}>
               <span style={{ width: 6, height: 6, borderRadius: "50%", background: C.silver, flexShrink: 0, display: "inline-block" }} />
-              SOL at <span style={{ color: "#fff", fontWeight: 600, margin: "0 4px" }}>${solPrice.toFixed(2)}</span> — zones marked 🎯 are currently within pullback range
+              {currentAssetLabel} at <span style={{ color: "#fff", fontWeight: 600, margin: "0 4px" }}>${solPrice.toFixed(2)}</span> — zones marked 🎯 are currently within pullback range
             </div>
           )}
           {zones.map((z, i) => (
@@ -378,7 +437,26 @@ export default function BotPage() {
               { key: 2, title: "Volume Surge", desc: "Buy when volume exceeds X times the 20-period average" },
               { key: 3, title: "Support Zone Confirmed", desc: "Buy only when price is near a support zone AND at least N indicators agree" },
             ];
-            return (<div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>{TRIGGERS.map(t => { const active = triggers[t.key]; return (<div key={t.key} style={{ background: active ? "rgba(192,192,192,0.08)" : "rgba(255,255,255,0.02)", border: `1px solid ${active ? "rgba(192,192,192,0.3)" : "rgba(255,255,255,0.07)"}`, borderRadius: 10, padding: "12px 14px", transition: "all 0.2s" }}><div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 8 }}><div style={{ flex: 1 }}><div style={{ marginBottom: 5 }}><span style={{ fontSize: 11, fontWeight: 600, color: active ? C.silverBright : "rgba(255,255,255,0.55)", background: active ? "rgba(192,192,192,0.1)" : "rgba(255,255,255,0.04)", border: `1px solid ${active ? "rgba(192,192,192,0.3)" : "rgba(255,255,255,0.08)"}`, borderRadius: 6, padding: "2px 9px", fontFamily: "'Inter', sans-serif" }}>{t.title}</span></div><div style={{ fontSize: 11, color: C.textFaint, lineHeight: 1.5, fontFamily: "'Inter', sans-serif" }}>{t.desc}</div></div><button onClick={() => { const nt = [...triggers]; nt[t.key] = !nt[t.key]; setTriggers(nt); }} style={{ width: 24, height: 24, borderRadius: 6, background: active ? "rgba(192,192,192,0.1)" : "transparent", border: `1px solid ${active ? "rgba(192,192,192,0.3)" : "rgba(255,255,255,0.1)"}`, color: active ? C.silverBright : "rgba(255,255,255,0.25)", cursor: "pointer", fontSize: 14, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>{active ? "✕" : "+"}</button></div></div>); })}</div>);
+            return (
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+                {TRIGGERS.map(t => {
+                  const active = triggers[t.key];
+                  return (
+                    <div key={t.key} style={{ background: active ? "rgba(192,192,192,0.08)" : "rgba(255,255,255,0.02)", border: `1px solid ${active ? "rgba(192,192,192,0.3)" : "rgba(255,255,255,0.07)"}`, borderRadius: 10, padding: "12px 14px", transition: "all 0.2s" }}>
+                      <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 8 }}>
+                        <div style={{ flex: 1 }}>
+                          <div style={{ marginBottom: 5 }}>
+                            <span style={{ fontSize: 11, fontWeight: 600, color: active ? C.silverBright : "rgba(255,255,255,0.55)", background: active ? "rgba(192,192,192,0.1)" : "rgba(255,255,255,0.04)", border: `1px solid ${active ? "rgba(192,192,192,0.3)" : "rgba(255,255,255,0.08)"}`, borderRadius: 6, padding: "2px 9px", fontFamily: "'Inter', sans-serif" }}>{t.title}</span>
+                          </div>
+                          <div style={{ fontSize: 11, color: C.textFaint, lineHeight: 1.5, fontFamily: "'Inter', sans-serif" }}>{t.desc}</div>
+                        </div>
+                        <button onClick={() => { const nt = [...triggers]; nt[t.key] = !nt[t.key]; setTriggers(nt); }} style={{ width: 24, height: 24, borderRadius: 6, background: active ? "rgba(192,192,192,0.1)" : "transparent", border: `1px solid ${active ? "rgba(192,192,192,0.3)" : "rgba(255,255,255,0.1)"}`, color: active ? C.silverBright : "rgba(255,255,255,0.25)", cursor: "pointer", fontSize: 14, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>{active ? "✕" : "+"}</button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            );
           })()}
           {anyTriggerActive ? (
             <div style={{ marginTop: 16 }}>
@@ -467,7 +545,7 @@ export default function BotPage() {
         {showBacktest && (
           <div className="bot-card" style={{ marginBottom: 10 }}>
             <div className="bot-section-title">📊 Backtest Results — Last 60 Days</div>
-            {backtestLoading && <div style={{ textAlign: "center", padding: "32px", color: C.textFaint, fontSize: 13, fontFamily: "'Inter', sans-serif" }}>⟳ Running simulation on historical SOL data...</div>}
+            {backtestLoading && <div style={{ textAlign: "center", padding: "32px", color: C.textFaint, fontSize: 13, fontFamily: "'Inter', sans-serif" }}>⟳ Running simulation on historical data...</div>}
             {!backtestLoading && backtestResult && (
               <>
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 10, marginBottom: 16 }}>
@@ -475,7 +553,7 @@ export default function BotPage() {
                     { label: "Orders Triggered", value: backtestResult.orders.length.toString() },
                     { label: "Capital Deployed", value: `$${backtestResult.deployed.toFixed(0)}` },
                     { label: "Avg Entry Price", value: backtestResult.avgEntry > 0 ? `$${backtestResult.avgEntry.toFixed(2)}` : "—" },
-                    { label: "SOL Accumulated", value: backtestResult.totalBought > 0 ? `${backtestResult.totalBought.toFixed(4)} SOL` : "—" },
+                    { label: `${currentAssetLabel} Accumulated`, value: backtestResult.totalBought > 0 ? `${backtestResult.totalBought.toFixed(4)} ${currentAssetLabel}` : "—" },
                     { label: "Current Value", value: `$${backtestResult.currentValue.toFixed(0)}` },
                     { label: "Est. PnL", value: `${backtestResult.pnl >= 0 ? "+" : ""}$${backtestResult.pnl.toFixed(0)} (${backtestResult.pnlPct.toFixed(1)}%)`, color: backtestResult.pnl >= 0 ? C.silverBright : C.red },
                   ].map((s, i) => (
@@ -493,7 +571,7 @@ export default function BotPage() {
                         <div style={{ width: 28, height: 28, borderRadius: "50%", background: "rgba(192,192,192,0.1)", border: "1px solid rgba(192,192,192,0.3)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, color: C.silverBright, fontWeight: 700, flexShrink: 0 }}>{i + 1}</div>
                         <div style={{ flex: 1 }}>
                           <div style={{ fontSize: 12, color: "#fff", fontWeight: 600, fontFamily: "'Inter', sans-serif" }}>Zone {o.zone}% pullback — ${o.amount.toFixed(0)} deployed</div>
-                          <div style={{ fontSize: 11, color: C.textFaint, fontFamily: "'Inter', sans-serif" }}>{o.date.toLocaleDateString()} · Entry: ${o.price.toFixed(2)} · {o.units.toFixed(4)} SOL</div>
+                          <div style={{ fontSize: 11, color: C.textFaint, fontFamily: "'Inter', sans-serif" }}>{o.date.toLocaleDateString()} · Entry: ${o.price.toFixed(2)} · {o.units.toFixed(4)} {currentAssetLabel}</div>
                         </div>
                         <div style={{ fontSize: 12, color: C.silver, fontWeight: 600, fontFamily: "'Inter', sans-serif" }}>${o.amount.toFixed(0)}</div>
                       </div>

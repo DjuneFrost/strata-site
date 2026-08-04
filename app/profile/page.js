@@ -34,7 +34,7 @@ export default function ProfilePage() {
         .pf-card { background: ${C.panel}; border: 1px solid ${C.border}; border-radius: 12px; }
       `}</style>
 
-      <div style={{ padding: "32px 36px 60px", color: C.text }}>
+      <div style={{ padding: "32px 4vw 60px", color: C.text, maxWidth: 1400, margin: "0 auto" }}>
         <div style={{ marginBottom: 24 }}>
           <h1 style={{ fontFamily: "'Newsreader', serif", fontSize: 26, fontWeight: 600, color: C.silverBright, margin: 0 }}>Profile</h1>
           <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 13.5, color: C.textDim, margin: "4px 0 0" }}>

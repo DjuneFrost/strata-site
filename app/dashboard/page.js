@@ -36,7 +36,7 @@ export default function DashboardPage() {
         @import url('https://fonts.googleapis.com/css2?family=Newsreader:wght@500;600&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
       `}</style>
 
-      <div style={{ padding: "32px 36px 60px", color: C.text }}>
+      <div style={{ padding: "32px 4vw 60px", color: C.text, maxWidth: 1400, margin: "0 auto" }}>
 
         {/* Header */}
         <div style={{ marginBottom: 28 }}>
