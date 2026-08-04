@@ -4,7 +4,7 @@ import { usePathname } from "next/navigation";
 import { usePrivy } from "@privy-io/react-auth";
 
 const NAV_ITEMS = [
-  { href: "/", label: "Dashboard" },
+  { href: "/dashboard", label: "Dashboard" },
   { href: "/bot", label: "DCA Bot" },
   { href: "/profile", label: "Profile" },
   { href: "/settings", label: "Settings" },
