@@ -8,6 +8,7 @@ const NAV_ITEMS = [
   { href: "/bot", label: "DCA Bot" },
   { href: "/profile", label: "Profile" },
   { href: "/settings", label: "Settings" },
+  { href: "/pricing", label: "Pricing" },
 ];
 
 export default function Navbar() {
