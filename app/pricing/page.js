@@ -47,7 +47,7 @@ export default function PricingPage() {
   return (
     <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,500;0,600;1,500&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
         .plan-card { background: #111111; border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 32px; display: flex; flex-direction: column; }
         .plan-card.featured { background: #1a1a1a; border-color: rgba(192,192,192,0.3); }
         .feature-item { display: flex; align-items: center; gap: 10px; font-family: 'Inter', sans-serif; font-size: 13.5px; color: rgba(230,230,230,0.7); margin-bottom: 10px; }
@@ -58,14 +58,14 @@ export default function PricingPage() {
         .toggle-opt.inactive { background: transparent; color: rgba(230,230,230,0.4); }
       `}</style>
 
-      <div style={{ padding: "48px 4vw 80px", color: C.text, maxWidth: 1400, margin: "0 auto" }}>
+      <div style={{ padding: "32px 4vw 80px", color: C.text, maxWidth: 1400, margin: "0 auto" }}>
 
         {/* Header */}
         <div style={{ textAlign: "center", marginBottom: 48 }}>
           <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 11, letterSpacing: "0.16em", textTransform: "uppercase", color: C.textFaint, marginBottom: 14 }}>
             Pricing
           </div>
-          <h1 style={{ fontFamily: "'Syne', sans-serif", fontSize: "clamp(32px, 5vw, 52px)", fontWeight: 800, color: C.silverBright, margin: "0 0 16px", letterSpacing: "-0.02em" }}>
+          <h1 style={{ fontFamily: "'Newsreader', serif", fontStyle: "italic", fontSize: "clamp(32px, 5vw, 52px)", fontWeight: 500, color: C.silverBright, margin: "0 0 16px" }}>
             Simple, transparent pricing.
           </h1>
           <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 16, color: C.textDim, maxWidth: 480, margin: "0 auto 32px" }}>
@@ -89,11 +89,11 @@ export default function PricingPage() {
         {/* Plans */}
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 20, maxWidth: 1000, margin: "0 auto" }}>
 
-          {/* Monthly */}
+          {/* Starter */}
           <div className="plan-card">
             <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 11, textTransform: "uppercase", letterSpacing: "0.1em", color: C.textFaint, marginBottom: 16 }}>Starter</div>
             <div style={{ marginBottom: 24 }}>
-              <span style={{ fontFamily: "'Syne', sans-serif", fontSize: 42, fontWeight: 800, color: C.silverBright }}>
+              <span style={{ fontFamily: "'Newsreader', serif", fontSize: 42, fontWeight: 600, color: C.silverBright }}>
                 ${annual ? "12.49" : "19.99"}
               </span>
               <span style={{ fontFamily: "'Inter', sans-serif", fontSize: 14, color: C.textDim, marginLeft: 6 }}>/month</span>
@@ -112,14 +112,14 @@ export default function PricingPage() {
             </button>
           </div>
 
-          {/* Annual */}
+          {/* Pro */}
           <div className="plan-card featured" style={{ position: "relative" }}>
             <div style={{ position: "absolute", top: -12, left: "50%", transform: "translateX(-50%)", background: C.silverBright, color: "#080808", fontFamily: "'IBM Plex Mono', monospace", fontSize: 10, fontWeight: 700, padding: "4px 14px", borderRadius: 20, whiteSpace: "nowrap", letterSpacing: "0.08em" }}>
               MOST POPULAR
             </div>
             <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 11, textTransform: "uppercase", letterSpacing: "0.1em", color: C.textFaint, marginBottom: 16 }}>Pro</div>
             <div style={{ marginBottom: 24 }}>
-              <span style={{ fontFamily: "'Syne', sans-serif", fontSize: 42, fontWeight: 800, color: C.silverBright }}>
+              <span style={{ fontFamily: "'Newsreader', serif", fontSize: 42, fontWeight: 600, color: C.silverBright }}>
                 $149.99
               </span>
               <span style={{ fontFamily: "'Inter', sans-serif", fontSize: 14, color: C.textDim, marginLeft: 6 }}>/year</span>
@@ -142,7 +142,7 @@ export default function PricingPage() {
           <div className="plan-card">
             <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 11, textTransform: "uppercase", letterSpacing: "0.1em", color: C.textFaint, marginBottom: 16 }}>Enterprise</div>
             <div style={{ marginBottom: 24 }}>
-              <span style={{ fontFamily: "'Syne', sans-serif", fontSize: 42, fontWeight: 800, color: C.silverBright }}>
+              <span style={{ fontFamily: "'Newsreader', serif", fontSize: 42, fontWeight: 600, color: C.silverBright }}>
                 Custom
               </span>
               <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 12, color: C.textDim, marginTop: 4 }}>Tailored to your needs</div>
@@ -156,11 +156,11 @@ export default function PricingPage() {
               ))}
             </div>
             <a
-              href="mailto:contact@zillaengine.xyz"
-              style={{ width: "100%", padding: "13px", borderRadius: 10, background: "transparent", border: "1px solid rgba(192,192,192,0.3)", color: C.silverBright, fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: 14, cursor: "pointer", textAlign: "center", textDecoration: "none", display: "block" }}
-            >
-              Contact Us
-            </a>
+href="mailto:contact@zillaengine.xyz"
+  style={{ width: "100%", padding: "13px", borderRadius: 10, background: "transparent", border: "1px solid rgba(192,192,192,0.3)", color: C.silverBright, fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: 14, cursor: "pointer", textAlign: "center", textDecoration: "none", display: "flex", alignItems: "center", justifyContent: "center", boxSizing: "border-box" }}
+>
+  Contact Us
+</a>
           </div>
 
         </div>

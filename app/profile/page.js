@@ -119,30 +119,6 @@ export default function ProfilePage() {
                 </div>
               </div>
             </div>
-
-            {/* Trade history */}
-            <div className="pf-card" style={{ padding: 24 }}>
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 18 }}>
-                <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 14, fontWeight: 600, color: C.silverBright }}>Bot Trade History</div>
-                <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 11, color: C.textFaint }}>0 fills</span>
-              </div>
-              <table style={{ width: "100%", borderCollapse: "collapse", fontFamily: "'IBM Plex Mono', monospace", fontSize: 13 }}>
-                <thead>
-                  <tr>
-                    {["Date", "Side", "Trigger", "Amount", "Price", "Quantity"].map(h => (
-                      <th key={h} style={{ textAlign: "left", fontFamily: "'Inter', sans-serif", fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em", color: C.textFaint, padding: "10px 12px", borderBottom: "1px solid rgba(255,255,255,0.08)" }}>{h}</th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td colSpan={6} style={{ padding: "32px 12px", textAlign: "center", color: C.textFaint, fontFamily: "'Inter', sans-serif", fontSize: 13 }}>
-                      Empty — your trades will appear here once the bot is active.
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
           </>
         )}
       </div>

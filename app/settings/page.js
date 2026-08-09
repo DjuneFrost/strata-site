@@ -14,30 +14,16 @@ const C = {
 };
 
 const DEXES = [
-  {
-    id: "jupiter",
-    name: "Jupiter",
-    logo: "https://jup.ag/favicon.ico",
-    chain: "Solana",
-    color: "#C7F284",
-  },
-  {
-    id: "uniswap",
-    name: "Uniswap",
-    logo: "https://app.uniswap.org/favicon.png",
-    chain: "Ethereum",
-    color: "#FF007A",
-  },
-  {
-    id: "pancakeswap",
-    name: "PancakeSwap",
-    logo: "https://pancakeswap.finance/favicon.ico",
-    chain: "BNB Chain",
-    color: "#1FC7D4",
-  },
+  { id: "jupiter", name: "Jupiter", logo: "https://jup.ag/favicon.ico", chain: "Solana" },
+  { id: "uniswap", name: "Uniswap", logo: "https://app.uniswap.org/favicon.png", chain: "Ethereum" },
+  { id: "pancakeswap", name: "PancakeSwap", logo: "https://pancakeswap.finance/favicon.ico", chain: "BNB Chain" },
 ];
 
-function DexCard({ dex }) {
+const CEXES = [
+  { id: "bybit", name: "Bybit", logo: "https://www.bybit.com/favicon.ico", chain: "CEX" },
+];
+
+function ExchangeCard({ exchange }) {
   const [connected, setConnected] = useState(false);
 
   return (
@@ -50,10 +36,9 @@ function DexCard({ dex }) {
       flexDirection: "column",
       gap: 20,
       transition: "border-color .2s",
-       width: 320,
-flexShrink: 0,
+      width: 320,
+      flexShrink: 0,
     }}>
-      {/* Top: logo + name */}
       <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
         <div style={{
           width: 72, height: 72, borderRadius: 16,
@@ -63,29 +48,28 @@ flexShrink: 0,
           flexShrink: 0,
         }}>
           <img
-            src={dex.logo}
-            alt={dex.name}
+            src={exchange.logo}
+            alt={exchange.name}
             style={{ width: 44, height: 44, objectFit: "contain" }}
             onError={e => { e.target.style.display = "none"; }}
           />
         </div>
-        <div>
-          <div style={{ fontFamily: "'Syne', sans-serif", fontSize: 28, fontWeight: 700, color: C.silverBright }}>
-            {dex.name}
+        <div style={{ flex: 1 }}>
+          <div style={{ fontFamily: "'Newsreader', serif", fontSize: 24, fontWeight: 600, color: C.silverBright }}>
+            {exchange.name}
           </div>
           <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 11, color: C.textFaint, marginTop: 4 }}>
-            {dex.chain}
+            {exchange.chain}
           </div>
         </div>
         {connected && (
-          <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 6, fontFamily: "'Inter', sans-serif", fontSize: 12, color: C.green, background: "rgba(111,207,151,0.08)", border: "1px solid rgba(111,207,151,0.25)", borderRadius: 20, padding: "4px 12px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 6, fontFamily: "'Inter', sans-serif", fontSize: 12, color: C.green, background: "rgba(111,207,151,0.08)", border: "1px solid rgba(111,207,151,0.25)", borderRadius: 20, padding: "4px 12px", flexShrink: 0 }}>
             <span style={{ width: 6, height: 6, borderRadius: "50%", background: C.green, display: "inline-block" }} />
             Connected
           </div>
         )}
       </div>
 
-      {/* Bottom: connect button */}
       <button
         onClick={() => setConnected(!connected)}
         style={{
@@ -112,26 +96,38 @@ export default function SettingsPage() {
   return (
     <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Newsreader:wght@500;600&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
       `}</style>
 
       <div style={{ padding: "32px 4vw 60px", color: C.text, maxWidth: 1400, margin: "0 auto" }}>
-        <div style={{ marginBottom: 32 }}>
-          <h1 style={{ fontFamily: "'Syne', sans-serif", fontSize: 26, fontWeight: 700, color: C.silverBright, margin: 0 }}>Settings</h1>
+
+        <div style={{ marginBottom: 28 }}>
+          <h1 style={{ fontFamily: "'Newsreader', serif", fontSize: 26, fontWeight: 600, color: C.silverBright, margin: 0 }}>Settings</h1>
           <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 13.5, color: C.textDim, margin: "4px 0 0" }}>
-            Connect your DEX to enable live bot trading
+            Connect your DEX or CEX to enable live bot trading
           </p>
         </div>
 
+        {/* DEX Section */}
         <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 11, textTransform: "uppercase", letterSpacing: "0.1em", color: C.textFaint, fontWeight: 600, marginBottom: 16 }}>
           DEX Connections
         </div>
-
-         <div style={{ display: "flex", gap: 20, justifyContent: "center" }}>
+        <div style={{ display: "flex", gap: 20, flexWrap: "wrap", marginBottom: 48 }}>
           {DEXES.map(dex => (
-            <DexCard key={dex.id} dex={dex} />
+            <ExchangeCard key={dex.id} exchange={dex} />
           ))}
         </div>
+
+        {/* CEX Section */}
+        <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 11, textTransform: "uppercase", letterSpacing: "0.1em", color: C.textFaint, fontWeight: 600, marginBottom: 16 }}>
+          CEX Connections
+        </div>
+        <div style={{ display: "flex", gap: 20, flexWrap: "wrap" }}>
+          {CEXES.map(cex => (
+            <ExchangeCard key={cex.id} exchange={cex} />
+          ))}
+        </div>
+
       </div>
     </>
   );

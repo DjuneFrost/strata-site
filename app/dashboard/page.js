@@ -40,29 +40,27 @@ export default function DashboardPage() {
 
         {/* Header */}
         <div style={{ marginBottom: 28 }}>
-          <h1 style={{ fontFamily: "'Newsreader', serif", fontSize: 26, fontWeight: 600, color: C.silverBright, margin: 0 }}>
-            Welcome back{authenticated ? `, ${displayName}` : ""} 👋
-          </h1>
+<h1 style={{ fontFamily: "'Newsreader', serif", fontSize: 26, fontWeight: 600, color: C.silverBright, margin: 0 }}>
+  Your Dashboard
+</h1>
           <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 13.5, color: C.textDim, margin: "4px 0 0" }}>
             Here's an overview of your DCA bot activity.
           </p>
         </div>
 
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 16 }}>
 
           {/* Profit & Loss card */}
           <div style={{ background: C.panel, border: `1px solid ${C.border}`, borderRadius: 12, padding: 24 }}>
             <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 11, textTransform: "uppercase", letterSpacing: "0.08em", color: C.textFaint, marginBottom: 20 }}>
               Profit / Loss
             </div>
-
             <div style={{ fontFamily: "'Newsreader', serif", fontSize: 42, fontWeight: 600, color: C.textDim, marginBottom: 4 }}>
               —
             </div>
             <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 12, color: C.textFaint, marginBottom: 24 }}>
               No trades executed yet
             </div>
-
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 16, paddingTop: 18, borderTop: `1px solid rgba(255,255,255,0.06)` }}>
               <StatBlock label="Account Value" value="—" />
               <StatBlock label="Open P&L" value="—" />
@@ -76,12 +74,10 @@ export default function DashboardPage() {
               <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 11, textTransform: "uppercase", letterSpacing: "0.08em", color: C.textFaint, marginBottom: 20 }}>
                 DCA Bot
               </div>
-
               <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16 }}>
                 <div style={{ width: 8, height: 8, borderRadius: "50%", background: "rgba(192,192,192,0.3)", flexShrink: 0 }} />
                 <span style={{ fontFamily: "'Inter', sans-serif", fontSize: 13, color: C.textDim }}>No active strategy</span>
               </div>
-
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 24 }}>
                 <StatBlock label="Strategies" value="0 / 0" />
                 <StatBlock label="Deployed Capital" value="$0" />
@@ -89,7 +85,6 @@ export default function DashboardPage() {
                 <StatBlock label="Last Order" value="—" />
               </div>
             </div>
-
             <Link
               href="/bot"
               style={{
@@ -105,6 +100,31 @@ export default function DashboardPage() {
           </div>
 
         </div>
+
+        {/* Bot Trade History */}
+        <div style={{ background: C.panel, border: `1px solid ${C.border}`, borderRadius: 12, padding: 24 }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 18 }}>
+            <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 14, fontWeight: 600, color: C.silverBright }}>Bot Trade History</div>
+            <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 11, color: C.textFaint }}>0 fills</span>
+          </div>
+          <table style={{ width: "100%", borderCollapse: "collapse", fontFamily: "'IBM Plex Mono', monospace", fontSize: 13 }}>
+            <thead>
+              <tr>
+                {["Date", "Side", "Trigger", "Amount", "Price", "Quantity"].map(h => (
+                  <th key={h} style={{ textAlign: "left", fontFamily: "'Inter', sans-serif", fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em", color: C.textFaint, padding: "10px 12px", borderBottom: "1px solid rgba(255,255,255,0.08)" }}>{h}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td colSpan={6} style={{ padding: "32px 12px", textAlign: "center", color: C.textFaint, fontFamily: "'Inter', sans-serif", fontSize: 13 }}>
+                  Empty — your trades will appear here once the bot is active.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
       </div>
     </>
   );
