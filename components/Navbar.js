@@ -1,4 +1,5 @@
 "use client";
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { usePrivy } from "@privy-io/react-auth";
@@ -8,12 +9,42 @@ const NAV_ITEMS = [
   { href: "/bot", label: "DCA Bot" },
   { href: "/profile", label: "Profile" },
   { href: "/settings", label: "Settings" },
-  { href: "/pricing", label: "Pricing" },
 ];
 
 export default function Navbar() {
   const pathname = usePathname();
   const { ready, authenticated, login, logout, user } = usePrivy();
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
+
+  const avatarLetter = (
+    user?.email?.address?.[0] ||
+    user?.wallet?.address?.[0] ||
+    "?"
+  ).toUpperCase();
+
+  const avatarPicture =
+    user?.google?.picture ||
+    user?.twitter?.profilePictureUrl ||
+    null;
+
+  const displayName =
+    user?.google?.name ||
+    user?.twitter?.name ||
+    user?.email?.address?.split("@")[0] ||
+    user?.wallet?.address?.slice(0, 6) + "..." ||
+    "Account";
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   return (
     <nav style={{
@@ -72,26 +103,107 @@ export default function Navbar() {
         {ready && (
           authenticated ? (
             <>
-              <span style={{
-                fontFamily: "'Inter', sans-serif", fontSize: 12,
-                color: "rgba(230,230,230,0.45)",
-                overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
-                maxWidth: 140,
-              }}>
-                {user?.email?.address || (user?.wallet?.address?.slice(0, 6) + "..." + user?.wallet?.address?.slice(-4)) || "Connected"}
-              </span>
-              <button
-                onClick={logout}
+              {/* Upgrade button */}
+              <Link
+                href="/pricing"
                 style={{
-                  padding: "8px 16px", borderRadius: 8,
-                  background: "transparent",
-                  border: "1px solid rgba(255,107,107,0.3)",
-                  color: "#ff6b6b", cursor: "pointer",
-                  fontSize: 13, fontFamily: "'Inter', sans-serif", fontWeight: 600,
+                  padding: "7px 16px", borderRadius: 8,
+                  background: "linear-gradient(135deg,#9945FF,#7a35cc)",
+                  color: "#fff", fontFamily: "'Inter', sans-serif",
+                  fontWeight: 700, fontSize: 13, textDecoration: "none",
+                  display: "inline-block",
                 }}
               >
-                Sign Out
-              </button>
+                Upgrade
+              </Link>
+
+              {/* Avatar + Dropdown */}
+              <div ref={dropdownRef} style={{ position: "relative" }}>
+                <div
+                  onClick={() => setDropdownOpen(!dropdownOpen)}
+                  style={{
+                    width: 34, height: 34, borderRadius: "50%",
+                    background: "rgba(192,192,192,0.12)",
+                    border: "1px solid rgba(192,192,192,0.3)",
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                    fontFamily: "'Inter', sans-serif", fontWeight: 700,
+                    fontSize: 14, color: "#F2F2F2", cursor: "pointer",
+                    overflow: "hidden", flexShrink: 0,
+                  }}
+                >
+                  {avatarPicture ? (
+                    <img
+                      src={avatarPicture}
+                      style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                      alt="avatar"
+                    />
+                  ) : (
+                    avatarLetter
+                  )}
+                </div>
+
+                {/* Dropdown */}
+                {dropdownOpen && (
+                  <div style={{
+                    position: "absolute", top: 44, right: 0,
+                    background: "#1a1a1a",
+                    border: "1px solid rgba(192,192,192,0.15)",
+                    borderRadius: 12, overflow: "hidden",
+                    minWidth: 200,
+                    boxShadow: "0 8px 32px rgba(0,0,0,0.6)",
+                    zIndex: 200,
+                  }}>
+                    {/* User info */}
+                    <div style={{ padding: "14px 16px", borderBottom: "1px solid rgba(255,255,255,0.07)", display: "flex", alignItems: "center", gap: 10 }}>
+                      <div style={{ width: 30, height: 30, borderRadius: "50%", background: "rgba(192,192,192,0.12)", border: "1px solid rgba(192,192,192,0.2)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 700, color: "#F2F2F2", overflow: "hidden", flexShrink: 0 }}>
+                        {avatarPicture ? <img src={avatarPicture} style={{ width: "100%", height: "100%", objectFit: "cover" }} alt="avatar" /> : avatarLetter}
+                      </div>
+                      <span style={{ fontFamily: "'Inter', sans-serif", fontSize: 13, fontWeight: 600, color: "#F2F2F2", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                        {displayName}
+                      </span>
+                    </div>
+
+                    {/* Menu items */}
+                    {[
+{ label: "Account", href: "/account", icon: "◔" },
+{ label: "Portfolio", href: "/dashboard", icon: "▦" },
+{ label: "Referral", href: "/referral", icon: "◈" },
+                    ].map((item) => (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        onClick={() => setDropdownOpen(false)}
+                        style={{
+                          display: "flex", alignItems: "center", gap: 10,
+                          padding: "12px 16px",
+                          fontFamily: "'Inter', sans-serif", fontSize: 13, fontWeight: 500,
+                          color: "rgba(230,230,230,0.7)", textDecoration: "none",
+                          borderBottom: "1px solid rgba(255,255,255,0.05)",
+                          transition: "background .15s",
+                        }}
+                      >
+                        <span style={{ fontSize: 14, color: "rgba(192,192,192,0.6)" }}>{item.icon}</span>
+                        {item.label}
+                      </Link>
+                    ))}
+
+                    {/* Sign Out */}
+                    <button
+                      onClick={() => { logout(); setDropdownOpen(false); }}
+                      style={{
+                        width: "100%", padding: "12px 16px",
+                        display: "flex", alignItems: "center", gap: 10,
+                        background: "transparent", border: "none",
+                        fontFamily: "'Inter', sans-serif", fontSize: 13, fontWeight: 500,
+                        color: "#ff6b6b", cursor: "pointer", textAlign: "left",
+                      }}
+                    >
+                      <span style={{ fontSize: 14 }}>→</span>
+                      Sign Out
+                    </button>
+                  </div>
+                )}
+              </div>
             </>
           ) : (
             <>
