@@ -7,7 +7,7 @@ import { usePrivy } from "@privy-io/react-auth";
 const NAV_ITEMS = [
   { href: "/dashboard", label: "Dashboard" },
   { href: "/bot", label: "DCA Bot" },
-  { href: "/profile", label: "Profile" },
+  { href: "/wallet", label: "Wallet" },
   { href: "/settings", label: "Settings" },
 ];
 
