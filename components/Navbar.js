@@ -8,7 +8,7 @@ const NAV_ITEMS = [
   { href: "/dashboard", label: "Dashboard" },
   { href: "/bot", label: "DCA Bot" },
   { href: "/wallet", label: "Wallet" },
-  { href: "/settings", label: "Settings" },
+  { href: "/portfolio", label: "Portfolio" },
 ];
 
 export default function Navbar() {
@@ -104,18 +104,20 @@ export default function Navbar() {
           authenticated ? (
             <>
               {/* Upgrade button */}
-              <Link
-                href="/pricing"
-                style={{
-                  padding: "7px 16px", borderRadius: 8,
-                  background: "linear-gradient(135deg,#9945FF,#7a35cc)",
-                  color: "#fff", fontFamily: "'Inter', sans-serif",
-                  fontWeight: 700, fontSize: 13, textDecoration: "none",
-                  display: "inline-block",
-                }}
-              >
-                Upgrade
-              </Link>
+<Link
+  href="/pricing"
+  style={{
+    padding: "7px 18px", borderRadius: 8,
+    background: "linear-gradient(135deg, #ffffff 0%, #C0C0C0 40%, #e8e8e8 60%, #a0a0a0 100%)",
+    color: "#0A0A0A", fontFamily: "'Inter', sans-serif",
+    fontWeight: 700, fontSize: 13, textDecoration: "none",
+    display: "inline-block",
+    boxShadow: "0 0 12px rgba(255,255,255,0.25), 0 2px 8px rgba(0,0,0,0.4)",
+    letterSpacing: "0.03em",
+  }}
+>
+  ✦ Upgrade
+</Link>
 
               {/* Avatar + Dropdown */}
               <div ref={dropdownRef} style={{ position: "relative" }}>
@@ -166,7 +168,8 @@ export default function Navbar() {
                     {/* Menu items */}
                     {[
 { label: "Account", href: "/account", icon: "◔" },
-{ label: "Portfolio", href: "/dashboard", icon: "▦" },
+{ label: "DEX Connection", href: "/dex", icon: "⬡" },
+{ label: "CEX Connection", href: "/cex", icon: "⚙" },
 { label: "Referral", href: "/referral", icon: "◈" },
                     ].map((item) => (
                       <Link
