@@ -24,6 +24,7 @@ const NETWORKS = [
     colorDim: "rgba(153,69,255,0.12)",
     colorBorder: "rgba(153,69,255,0.3)",
     logo: "https://assets.coingecko.com/coins/images/4128/small/solana.png",
+    comingSoon: false,
   },
   {
     id: "bnb",
@@ -34,6 +35,7 @@ const NETWORKS = [
     colorDim: "rgba(243,186,47,0.1)",
     colorBorder: "rgba(243,186,47,0.3)",
     logo: "https://assets.coingecko.com/coins/images/825/small/bnb-icon2_2x.png",
+    comingSoon: true,
   },
   {
     id: "hyperliquid",
@@ -44,6 +46,7 @@ const NETWORKS = [
     colorDim: "rgba(20,241,149,0.08)",
     colorBorder: "rgba(20,241,149,0.25)",
     logo: "https://assets.coingecko.com/coins/images/35809/small/hyperliquid.png",
+    comingSoon: true,
   },
 ];
 
@@ -93,14 +96,15 @@ function NetworkCard({ network }) {
         {["deposit", "withdraw"].map(t => (
           <button
             key={t}
-            onClick={() => setTab(t)}
+            onClick={() => !network.comingSoon && setTab(t)}
             style={{
               flex: 1, padding: "12px",
               background: "transparent", border: "none",
               fontFamily: "'Inter', sans-serif", fontSize: 13, fontWeight: 600,
               color: tab === t ? network.color : C.textFaint,
               borderBottom: tab === t ? `2px solid ${network.color}` : "2px solid transparent",
-              cursor: "pointer", transition: "all .15s",
+              cursor: network.comingSoon ? "default" : "pointer",
+              transition: "all .15s",
               textTransform: "capitalize",
             }}
           >
@@ -122,10 +126,11 @@ function NetworkCard({ network }) {
                 value={amount}
                 onChange={e => setAmount(e.target.value)}
                 placeholder="0.00"
-                style={{ width: "100%", background: "#0a0a0a", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 10, color: C.silverBright, fontFamily: "'IBM Plex Mono', monospace", fontSize: 14, padding: "11px 14px", outline: "none", boxSizing: "border-box" }}
+                disabled={network.comingSoon}
+                style={{ width: "100%", background: "#0a0a0a", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 10, color: C.silverBright, fontFamily: "'IBM Plex Mono', monospace", fontSize: 14, padding: "11px 14px", outline: "none", boxSizing: "border-box", opacity: network.comingSoon ? 0.4 : 1 }}
               />
             </div>
-            <div style={{ background: "#0a0a0a", border: "1px solid rgba(255,255,255,0.07)", borderRadius: 10, padding: "12px 14px", marginBottom: 16 }}>
+            <div style={{ background: "#0a0a0a", border: "1px solid rgba(255,255,255,0.07)", borderRadius: 10, padding: "12px 14px", marginBottom: 16, opacity: network.comingSoon ? 0.4 : 1 }}>
               <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 11, color: C.textFaint, marginBottom: 4 }}>
                 Send {network.token} to this address on {network.name}
               </div>
@@ -133,14 +138,18 @@ function NetworkCard({ network }) {
                 — Connect wallet to see address —
               </div>
             </div>
-            <button style={{
-              width: "100%", padding: "12px", borderRadius: 8,
-              background: `linear-gradient(135deg, ${network.color}, ${network.color}cc)`,
-              border: "none", color: "#080808",
-              fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: 14,
-              cursor: "pointer",
-            }}>
-              Deposit USDC on {network.name}
+            <button
+              disabled={network.comingSoon}
+              style={{
+                width: "100%", padding: "12px", borderRadius: 8,
+                background: network.comingSoon ? "rgba(255,255,255,0.05)" : `linear-gradient(135deg, ${network.color}, ${network.color}cc)`,
+                border: network.comingSoon ? "1px solid rgba(255,255,255,0.1)" : "none",
+                color: network.comingSoon ? "rgba(230,230,230,0.4)" : "#080808",
+                fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: 14,
+                cursor: network.comingSoon ? "not-allowed" : "pointer",
+              }}
+            >
+              {network.comingSoon ? "Coming Soon" : `Deposit USDC on ${network.name}`}
             </button>
           </>
         ) : (
@@ -154,7 +163,8 @@ function NetworkCard({ network }) {
                 value={amount}
                 onChange={e => setAmount(e.target.value)}
                 placeholder="0.00"
-                style={{ width: "100%", background: "#0a0a0a", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 10, color: C.silverBright, fontFamily: "'IBM Plex Mono', monospace", fontSize: 14, padding: "11px 14px", outline: "none", boxSizing: "border-box" }}
+                disabled={network.comingSoon}
+                style={{ width: "100%", background: "#0a0a0a", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 10, color: C.silverBright, fontFamily: "'IBM Plex Mono', monospace", fontSize: 14, padding: "11px 14px", outline: "none", boxSizing: "border-box", opacity: network.comingSoon ? 0.4 : 1 }}
               />
             </div>
             <div style={{ marginBottom: 16 }}>
@@ -166,18 +176,22 @@ function NetworkCard({ network }) {
                 value={address}
                 onChange={e => setAddress(e.target.value)}
                 placeholder={`${network.symbol} address...`}
-                style={{ width: "100%", background: "#0a0a0a", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 10, color: C.silverBright, fontFamily: "'IBM Plex Mono', monospace", fontSize: 13, padding: "11px 14px", outline: "none", boxSizing: "border-box" }}
+                disabled={network.comingSoon}
+                style={{ width: "100%", background: "#0a0a0a", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 10, color: C.silverBright, fontFamily: "'IBM Plex Mono', monospace", fontSize: 13, padding: "11px 14px", outline: "none", boxSizing: "border-box", opacity: network.comingSoon ? 0.4 : 1 }}
               />
             </div>
-            <button style={{
-              width: "100%", padding: "12px", borderRadius: 8,
-              background: "transparent",
-              border: "1px solid rgba(192,192,192,0.3)",
-              color: C.silverBright,
-              fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: 14,
-              cursor: "pointer",
-            }}>
-              Withdraw USDC from {network.name}
+            <button
+              disabled={network.comingSoon}
+              style={{
+                width: "100%", padding: "12px", borderRadius: 8,
+                background: "transparent",
+                border: network.comingSoon ? "1px solid rgba(255,255,255,0.1)" : "1px solid rgba(192,192,192,0.3)",
+                color: network.comingSoon ? "rgba(230,230,230,0.4)" : C.silverBright,
+                fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: 14,
+                cursor: network.comingSoon ? "not-allowed" : "pointer",
+              }}
+            >
+              {network.comingSoon ? "Coming Soon" : `Withdraw USDC from ${network.name}`}
             </button>
           </>
         )}

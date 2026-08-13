@@ -11,6 +11,12 @@ const NAV_ITEMS = [
   { href: "/portfolio", label: "Portfolio" },
 ];
 
+const DROPDOWN_ITEMS = [
+  { label: "Account", href: "/account", locked: false },
+  { label: "CEX Connection", href: "/cex", locked: false },
+  { label: "Referral", href: "#", locked: true },
+];
+
 export default function Navbar() {
   const pathname = usePathname();
   const { ready, authenticated, login, logout, user } = usePrivy();
@@ -35,7 +41,6 @@ export default function Navbar() {
     user?.wallet?.address?.slice(0, 6) + "..." ||
     "Account";
 
-  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
@@ -104,20 +109,20 @@ export default function Navbar() {
           authenticated ? (
             <>
               {/* Upgrade button */}
-<Link
-  href="/pricing"
-  style={{
-    padding: "7px 18px", borderRadius: 8,
-    background: "linear-gradient(135deg, #ffffff 0%, #C0C0C0 40%, #e8e8e8 60%, #a0a0a0 100%)",
-    color: "#0A0A0A", fontFamily: "'Inter', sans-serif",
-    fontWeight: 700, fontSize: 13, textDecoration: "none",
-    display: "inline-block",
-    boxShadow: "0 0 12px rgba(255,255,255,0.25), 0 2px 8px rgba(0,0,0,0.4)",
-    letterSpacing: "0.03em",
-  }}
->
-  ✦ Upgrade
-</Link>
+              <Link
+                href="/pricing"
+                style={{
+                  padding: "7px 18px", borderRadius: 8,
+                  background: "linear-gradient(135deg, #ffffff 0%, #C0C0C0 40%, #e8e8e8 60%, #a0a0a0 100%)",
+                  color: "#0A0A0A", fontFamily: "'Inter', sans-serif",
+                  fontWeight: 700, fontSize: 13, textDecoration: "none",
+                  display: "inline-block",
+                  boxShadow: "0 0 12px rgba(255,255,255,0.25), 0 2px 8px rgba(0,0,0,0.4)",
+                  letterSpacing: "0.03em",
+                }}
+              >
+                ✦ Upgrade
+              </Link>
 
               {/* Avatar + Dropdown */}
               <div ref={dropdownRef} style={{ position: "relative" }}>
@@ -134,11 +139,7 @@ export default function Navbar() {
                   }}
                 >
                   {avatarPicture ? (
-                    <img
-                      src={avatarPicture}
-                      style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                      alt="avatar"
-                    />
+                    <img src={avatarPicture} style={{ width: "100%", height: "100%", objectFit: "cover" }} alt="avatar" />
                   ) : (
                     avatarLetter
                   )}
@@ -166,27 +167,31 @@ export default function Navbar() {
                     </div>
 
                     {/* Menu items */}
-                    {[
-{ label: "Account", href: "/account", icon: "◔" },
-{ label: "DEX Connection", href: "/dex", icon: "⬡" },
-{ label: "CEX Connection", href: "/cex", icon: "⚙" },
-{ label: "Referral", href: "/referral", icon: "◈" },
-                    ].map((item) => (
+                    {DROPDOWN_ITEMS.map((item) => (
                       <Link
-                        key={item.href}
-                        href={item.href}
-                        onClick={() => setDropdownOpen(false)}
+                        key={item.label}
+                        href={item.locked ? "#" : item.href}
+                        onClick={(e) => {
+                          if (item.locked) e.preventDefault();
+                          else setDropdownOpen(false);
+                        }}
                         style={{
-                          display: "flex", alignItems: "center", gap: 10,
-                          padding: "12px 16px",
+                          display: "flex", alignItems: "center", justifyContent: "space-between",
+                          gap: 10, padding: "12px 16px",
                           fontFamily: "'Inter', sans-serif", fontSize: 13, fontWeight: 500,
-                          color: "rgba(230,230,230,0.7)", textDecoration: "none",
+                          color: item.locked ? "rgba(230,230,230,0.3)" : "rgba(230,230,230,0.7)",
+                          textDecoration: "none",
                           borderBottom: "1px solid rgba(255,255,255,0.05)",
-                          transition: "background .15s",
+                          cursor: item.locked ? "not-allowed" : "pointer",
+                          opacity: item.locked ? 0.6 : 1,
                         }}
                       >
-                        <span style={{ fontSize: 14, color: "rgba(192,192,192,0.6)" }}>{item.icon}</span>
-                        {item.label}
+<div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+  {item.label}
+</div>
+                        {item.locked && (
+                          <span style={{ fontSize: 12 }}>🔒</span>
+                        )}
                       </Link>
                     ))}
 
