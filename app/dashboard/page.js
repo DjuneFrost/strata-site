@@ -55,16 +55,16 @@ export default function DashboardPage() {
             <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 11, textTransform: "uppercase", letterSpacing: "0.08em", color: C.textFaint, marginBottom: 20 }}>
               Profit / Loss
             </div>
-            <div style={{ fontFamily: "'Newsreader', serif", fontSize: 42, fontWeight: 600, color: C.textDim, marginBottom: 4 }}>
-              —
-            </div>
+<div style={{ fontFamily: "'Newsreader', serif", fontSize: 42, fontWeight: 600, color: C.textDim, marginBottom: 4 }}>
+  $0.00
+</div>
             <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 12, color: C.textFaint, marginBottom: 24 }}>
               No trades executed yet
             </div>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 16, paddingTop: 18, borderTop: `1px solid rgba(255,255,255,0.06)` }}>
-              <StatBlock label="Account Value" value="—" />
-              <StatBlock label="Open P&L" value="—" />
-              <StatBlock label="Realized" value="—" />
+<StatBlock label="Account Value" value="$0" />
+<StatBlock label="Open P&L" value="$0" />
+<StatBlock label="Realized" value="$0" />
             </div>
           </div>
 
