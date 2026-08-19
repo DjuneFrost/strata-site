@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
+import { Target, Zap, Save, BarChart2, Play, Settings, Shield, TrendingDown, TrendingUp, Hash, AlertTriangle } from "lucide-react";
 
 // ---- Chains & tokens ----
 const CHAINS = [
@@ -178,7 +179,7 @@ export default function BotPage() {
   });
 
   const handleSaveStrategy = () => {
-    if (!strategyName) { showToast("⚠️ Enter a strategy name first!"); return; }
+    if (!strategyName) { showToast("Please enter a strategy name first."); return; }
     setSaving(true);
     const payload = { name: strategyName, chain: selectedChain.label, token: selectedToken.label, capital: Number(capital), exposure: Number(exposure), zones, status: "preview", created_at: new Date().toISOString() };
     setTimeout(() => {
@@ -202,7 +203,7 @@ export default function BotPage() {
     setTrendFilter("Above MA50"); setAtrGuard(2.5); setCooldown(6); setMinOrder(10.5);
     setTriggerMode(2); setTriggers([true, false, false, true]);
     setRsiThreshold(30); setSupportIndicators(1);
-    showToast("⚡ Preset applied!");
+    showToast("<Zap size={14} /> Preset applied!");
   };
 
   const totalAlloc = zones.reduce((s, z) => s + Number(z.alloc), 0);
@@ -374,14 +375,14 @@ export default function BotPage() {
 
         {/* Configure Strategy */}
         <div className="bot-card">
-          <div className="bot-section-title">⚙ Configure Strategy</div>
+          <div className="bot-section-title"><Settings size={14} /> Configure Strategy</div>
           <div style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(192,192,192,0.15)", borderRadius: 12, padding: "14px 16px", display: "flex", alignItems: "center", gap: 14, marginBottom: 18 }}>
-            <div style={{ width: 34, height: 34, background: "rgba(192,192,192,0.1)", borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 17, flexShrink: 0 }}>⚡</div>
+            <div style={{ width: 34, height: 34, background: "rgba(192,192,192,0.1)", borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 17, flexShrink: 0 }}><Zap size={14} /></div>
             <div style={{ flex: 1 }}>
               <div style={{ fontWeight: 600, fontSize: 13, color: "#fff", marginBottom: 2, fontFamily: "'Inter', sans-serif" }}>Suggested preset</div>
               <div style={{ fontSize: 11, color: C.textFaint, fontFamily: "'Inter', sans-serif" }}>A balanced capital-protection DCA model for structured pullbacks in trending markets.</div>
             </div>
-            <button onClick={activatePreset} style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.2)", color: "#fff", fontFamily: "'Inter', sans-serif", fontSize: 13, fontWeight: 600, padding: "8px 18px", borderRadius: 8, cursor: "pointer", whiteSpace: "nowrap", flexShrink: 0 }}>⚡ Apply</button>
+            <button onClick={activatePreset} style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.2)", color: "#fff", fontFamily: "'Inter', sans-serif", fontSize: 13, fontWeight: 600, padding: "8px 18px", borderRadius: 8, cursor: "pointer", whiteSpace: "nowrap", flexShrink: 0 }}><Zap size={14} /> Apply</button>
           </div>
           <div className="bot-divider" />
           <div className="row2">
@@ -442,7 +443,7 @@ export default function BotPage() {
           {price > 0 && (
             <div style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.06)", borderRadius: 10, padding: "10px 14px", marginBottom: 12, fontSize: 12, color: C.textFaint, display: "flex", alignItems: "center", gap: 8, fontFamily: "'Inter', sans-serif" }}>
               <span style={{ width: 6, height: 6, borderRadius: "50%", background: C.silver, flexShrink: 0, display: "inline-block" }} />
-              {selectedToken.label} at <span style={{ color: "#fff", fontWeight: 600, margin: "0 4px" }}>${price.toFixed(2)}</span> — zones marked 🎯 are currently within pullback range
+              {selectedToken.label} at <span style={{ color: "#fff", fontWeight: 600, margin: "0 4px" }}>${price.toFixed(2)}</span> — zones marked <Target size={14} /> are currently within pullback range
             </div>
           )}
           {zones.map((z, i) => (
@@ -450,7 +451,7 @@ export default function BotPage() {
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                   <span style={{ fontSize: 13, fontWeight: 600, color: "#fff", fontFamily: "'Inter', sans-serif" }}>Zone {i + 1}</span>
-                  {activeZones[i] && <span style={{ fontSize: 10, padding: "2px 8px", borderRadius: 20, background: "rgba(192,192,192,0.15)", border: "1px solid rgba(192,192,192,0.4)", color: C.silver, fontWeight: 700, fontFamily: "'Inter', sans-serif" }}>🎯 Active</span>}
+                  {activeZones[i] && <span style={{ fontSize: 10, padding: "2px 8px", borderRadius: 20, background: "rgba(192,192,192,0.15)", border: "1px solid rgba(192,192,192,0.4)", color: C.silver, fontWeight: 700, fontFamily: "'Inter', sans-serif" }}><Target size={14} /> Active</span>}
                 </div>
                 <span style={{ fontSize: 11, color: C.textFaint, fontFamily: "'Inter', sans-serif" }}>Deploy when pullback ≥ {z.pullback}%</span>
               </div>
@@ -526,9 +527,9 @@ export default function BotPage() {
           {toggleDynamic && (
             <div style={{ marginTop: 18 }}>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginBottom: 18 }}>
-                {[{ key: "volatility", icon: "📉", title: "Volatility-Based", desc: "Reduces allocation during high ATR spikes" }, { key: "trend", icon: "📈", title: "Trend-Based", desc: "Boosts allocation during confirmed uptrends" }, { key: "combined", icon: "⚡", title: "Combined", desc: "Boosts in uptrends AND reduces during volatility" }].map(m => (
+                {[{ key: "volatility", icon: "↓", title: "Volatility-Based", desc: "Reduces allocation during high ATR spikes" }, { key: "trend", icon: "↑", title: "Trend-Based", desc: "Boosts allocation during confirmed uptrends" }, { key: "combined", icon: "⚡", title: "Combined", desc: "Boosts in uptrends AND reduces during volatility" }].map(m => (
                   <div key={m.key} onClick={() => setDynMode(m.key)} style={{ border: `1px solid ${dynMode === m.key ? "rgba(192,192,192,0.4)" : "rgba(255,255,255,0.07)"}`, borderRadius: 10, padding: 12, cursor: "pointer", background: dynMode === m.key ? "rgba(192,192,192,0.06)" : "rgba(255,255,255,0.02)" }}>
-                    <div style={{ fontSize: 14, marginBottom: 5 }}>{m.icon}</div>
+                    <div style={{ fontSize: 14, marginBottom: 5 }}></div>
                     <div style={{ fontSize: 12, fontWeight: 600, color: dynMode === m.key ? C.silverBright : "rgba(255,255,255,0.7)", marginBottom: 3, fontFamily: "'Inter', sans-serif" }}>{m.title}</div>
                     <div style={{ fontSize: 11, color: C.textFaint, lineHeight: 1.4, fontFamily: "'Inter', sans-serif" }}>{m.desc}</div>
                   </div>
@@ -551,11 +552,11 @@ export default function BotPage() {
           {toggleExit && (
             <div style={{ marginTop: 18 }}>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 10 }}>
-                <div className="bot-inner-box"><div style={{ display: "flex", alignItems: "center", gap: 7, marginBottom: 10 }}><span>🎯</span><span style={{ fontSize: 13, fontWeight: 600, color: "#fff", fontFamily: "'Inter', sans-serif" }}>Take Profit</span></div><div className="field-group"><label className="bot-label">% above avg entry</label><input type="number" className="bot-input" min={1} value={takeProfit} onChange={e => setTakeProfit(Math.max(1, Number(e.target.value)))} /></div></div>
-                <div className="bot-inner-box"><div style={{ display: "flex", alignItems: "center", gap: 7, marginBottom: 10 }}><span>📉</span><span style={{ fontSize: 13, fontWeight: 600, color: "#fff", fontFamily: "'Inter', sans-serif" }}>Trailing Stop-Loss</span></div><div className="field-group"><label className="bot-label">Drop % from all-time peak</label><input type="number" className="bot-input" min={0} max={90} value={trailingStop} onChange={e => setTrailingStop(Math.min(90, Math.max(0, Number(e.target.value))))} /></div></div>
+                <div className="bot-inner-box"><div style={{ display: "flex", alignItems: "center", gap: 7, marginBottom: 10 }}><span><Target size={14} /></span><span style={{ fontSize: 13, fontWeight: 600, color: "#fff", fontFamily: "'Inter', sans-serif" }}>Take Profit</span></div><div className="field-group"><label className="bot-label">% above avg entry</label><input type="number" className="bot-input" min={1} value={takeProfit} onChange={e => setTakeProfit(Math.max(1, Number(e.target.value)))} /></div></div>
+                <div className="bot-inner-box"><div style={{ display: "flex", alignItems: "center", gap: 7, marginBottom: 10 }}><span><TrendingDown size={14} /></span><span style={{ fontSize: 13, fontWeight: 600, color: "#fff", fontFamily: "'Inter', sans-serif" }}>Trailing Stop-Loss</span></div><div className="field-group"><label className="bot-label">Drop % from all-time peak</label><input type="number" className="bot-input" min={0} max={90} value={trailingStop} onChange={e => setTrailingStop(Math.min(90, Math.max(0, Number(e.target.value))))} /></div></div>
               </div>
               <div style={{ display: "flex", alignItems: "flex-start", gap: 10, background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 10, padding: "11px 14px" }}>
-                <span>⚠️</span>
+                <span><AlertTriangle size={14} /></span>
                 <div style={{ fontSize: 11, color: C.textFaint, lineHeight: 1.6, fontFamily: "'Inter', sans-serif" }}>All exit triggers <span style={{ color: "#fff", fontWeight: 600 }}>pause accumulation</span>. They do not automatically sell your assets.</div>
               </div>
             </div>
@@ -564,12 +565,13 @@ export default function BotPage() {
 
         {/* Backtest */}
         <button onClick={handleBacktest} style={{ width: "100%", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(192,192,192,0.3)", borderRadius: 12, color: C.silverBright, fontFamily: "'Inter', sans-serif", fontSize: 14, fontWeight: 600, padding: 14, cursor: "pointer", marginBottom: 10 }}>
-          📊 Run Backtest — Last 60 Days
+<BarChart2 size={14} /> Run Backtest — Last 60 Days
         </button>
 
         {showBacktest && (
           <div className="bot-card" style={{ marginBottom: 10 }}>
-            <div className="bot-section-title">📊 Backtest Results — Last 60 Days</div>
+            <div className="bot-section-title"><BarChart2 size={14} />
+ Backtest Results — Last 60 Days</div>
             {backtestLoading && <div style={{ textAlign: "center", padding: "32px", color: C.textFaint, fontSize: 13, fontFamily: "'Inter', sans-serif" }}>⟳ Running simulation...</div>}
             {!backtestLoading && backtestResult && (
               <>
@@ -592,7 +594,7 @@ export default function BotPage() {
                   <div style={{ textAlign: "center", padding: "24px", color: C.textFaint, fontSize: 13, fontFamily: "'Inter', sans-serif" }}>No zones triggered. Try reducing the pullback depth.</div>
                 )}
                 <div style={{ marginTop: 14, padding: "10px 14px", background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 10, fontSize: 11, color: C.textFaint, fontFamily: "'Inter', sans-serif" }}>
-                  ⚠️ Simulated results. Not financial advice.
+                  <AlertTriangle size={14} /> Simulated results. Not financial advice.
                 </div>
               </>
             )}
@@ -602,10 +604,10 @@ export default function BotPage() {
         {/* Save / Activate */}
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 20 }}>
           <button onClick={handleSaveStrategy} disabled={saving} style={{ background: saving ? "rgba(255,255,255,0.04)" : "rgba(255,255,255,0.06)", border: "1px solid rgba(192,192,192,0.3)", borderRadius: 12, color: saving ? C.textFaint : C.silverBright, fontFamily: "'Inter', sans-serif", fontSize: 14, fontWeight: 600, padding: 14, cursor: saving ? "not-allowed" : "pointer" }}>
-            {saving ? "⟳ Saving..." : "💾 Save Strategy"}
+            {saving ? "⟳ Saving..." : "Save Strategy"}
           </button>
-          <button onClick={() => showToast("🚀 Strategy activated!")} style={{ background: "linear-gradient(135deg,#E8E8E8,#B0B0B0)", border: "none", borderRadius: 12, color: "#0A0A0A", fontFamily: "'Inter', sans-serif", fontSize: 14, fontWeight: 700, padding: 14, cursor: "pointer" }}>
-            🚀 Activate Strategy
+          <button onClick={() => showToast("Strategy activated!")} style={{ background: "linear-gradient(135deg,#E8E8E8,#B0B0B0)", border: "none", borderRadius: 12, color: "#0A0A0A", fontFamily: "'Inter', sans-serif", fontSize: 14, fontWeight: 700, padding: 14, cursor: "pointer" }}>
+            <Play size={14} /> Activate Strategy
           </button>
         </div>
       </div>

@@ -3,6 +3,7 @@ import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { usePrivy } from "@privy-io/react-auth";
+import { User, Link2, Lock, LogOut } from "lucide-react";
 import AccountModal from "./AccountModal";
 
 const NAV_ITEMS = [
@@ -47,11 +48,14 @@ export default function Navbar() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const DROPDOWN_ITEMS = [
-    { label: "Account", action: "modal" },
-    { label: "CEX Connection", href: "/cex" },
-    { label: "Referral", locked: true },
-  ];
+  const itemStyle = {
+    display: "flex", alignItems: "center", gap: 10,
+    width: "100%", padding: "12px 16px",
+    fontFamily: "'Inter', sans-serif", fontSize: 13, fontWeight: 500,
+    color: "rgba(230,230,230,0.7)", background: "transparent",
+    border: "none", borderBottom: "1px solid rgba(255,255,255,0.05)",
+    cursor: "pointer", textAlign: "left", textDecoration: "none",
+  };
 
   return (
     <>
@@ -147,7 +151,7 @@ export default function Navbar() {
                       background: "#1a1a1a",
                       border: "1px solid rgba(192,192,192,0.15)",
                       borderRadius: 12, overflow: "hidden",
-                      minWidth: 200,
+                      minWidth: 210,
                       boxShadow: "0 8px 32px rgba(0,0,0,0.6)",
                       zIndex: 200,
                     }}>
@@ -161,74 +165,41 @@ export default function Navbar() {
                         </span>
                       </div>
 
-                      {/* Menu items */}
-                      {DROPDOWN_ITEMS.map((item) => {
-                        if (item.action === "modal") {
-                          return (
-                            <button
-                              key={item.label}
-                              onClick={() => { setAccountOpen(true); setDropdownOpen(false); }}
-                              style={{
-                                display: "flex", alignItems: "center", justifyContent: "space-between",
-                                width: "100%", padding: "12px 16px",
-                                fontFamily: "'Inter', sans-serif", fontSize: 13, fontWeight: 500,
-                                color: "rgba(230,230,230,0.7)", background: "transparent",
-                                border: "none", borderBottom: "1px solid rgba(255,255,255,0.05)",
-                                cursor: "pointer", textAlign: "left",
-                              }}
-                            >
-                              {item.label}
-                            </button>
-                          );
-                        }
-                        if (item.locked) {
-                          return (
-                            <div
-                              key={item.label}
-                              style={{
-                                display: "flex", alignItems: "center", justifyContent: "space-between",
-                                padding: "12px 16px",
-                                fontFamily: "'Inter', sans-serif", fontSize: 13, fontWeight: 500,
-                                color: "rgba(230,230,230,0.3)",
-                                borderBottom: "1px solid rgba(255,255,255,0.05)",
-                                cursor: "not-allowed", opacity: 0.6,
-                              }}
-                            >
-                              {item.label}
-                              <span style={{ fontSize: 12 }}>🔒</span>
-                            </div>
-                          );
-                        }
-                        return (
-                          <Link
-                            key={item.label}
-                            href={item.href}
-                            onClick={() => setDropdownOpen(false)}
-                            style={{
-                              display: "flex", alignItems: "center",
-                              padding: "12px 16px",
-                              fontFamily: "'Inter', sans-serif", fontSize: 13, fontWeight: 500,
-                              color: "rgba(230,230,230,0.7)", textDecoration: "none",
-                              borderBottom: "1px solid rgba(255,255,255,0.05)",
-                            }}
-                          >
-                            {item.label}
-                          </Link>
-                        );
-                      })}
+                      {/* Account */}
+                      <button
+                        onClick={() => { setAccountOpen(true); setDropdownOpen(false); }}
+                        style={itemStyle}
+                      >
+                        <User size={14} color="rgba(192,192,192,0.6)" />
+                        Account
+                      </button>
+
+                      {/* CEX Connection */}
+                      <Link
+                        href="/cex"
+                        onClick={() => setDropdownOpen(false)}
+                        style={itemStyle}
+                      >
+                        <Link2 size={14} color="rgba(192,192,192,0.6)" />
+                        CEX Connection
+                      </Link>
+
+                      {/* Referral — locked */}
+                      <div style={{ ...itemStyle, cursor: "not-allowed", opacity: 0.45, justifyContent: "space-between" }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                          <Lock size={14} color="rgba(192,192,192,0.6)" />
+                          Referral
+                        </div>
+                        <Lock size={12} color="rgba(192,192,192,0.4)" />
+                      </div>
 
                       {/* Sign Out */}
                       <button
                         onClick={() => { logout(); setDropdownOpen(false); }}
-                        style={{
-                          width: "100%", padding: "12px 16px",
-                          display: "flex", alignItems: "center", gap: 10,
-                          background: "transparent", border: "none",
-                          fontFamily: "'Inter', sans-serif", fontSize: 13, fontWeight: 500,
-                          color: "#ff6b6b", cursor: "pointer", textAlign: "left",
-                        }}
+                        style={{ ...itemStyle, color: "#ff6b6b", borderBottom: "none" }}
                       >
-                        <span>→</span> Sign Out
+                        <LogOut size={14} color="#ff6b6b" />
+                        Sign Out
                       </button>
                     </div>
                   )}
