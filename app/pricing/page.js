@@ -17,12 +17,18 @@ const PLANS = [
     id: "basic",
     name: "Basic",
     monthlyPrice: 8.99,
-    annualPrice: 7.49,
-    annualTotal: 89.99,
+    annualMonthly: 7.50,
+    annualTotal: 90.00,
+    description: "For individual investors getting started with automated accumulation.",
     features: [
-      "1 active DCA strategy",
-      "Up to 2 accumulation zones",
-      "Solana only",
+      "1 active strategy",
+      "1 asset",
+      "2 accumulation zones",
+      "Solana",
+      "Automated DCA",
+      "Live P&L",
+      "Portfolio tracking",
+      "Basic risk controls",
       "Email support",
     ],
     featured: false,
@@ -31,13 +37,20 @@ const PLANS = [
     id: "starter",
     name: "Starter",
     monthlyPrice: 15.99,
-    annualPrice: 12.99,
-    annualTotal: 155.99,
+    annualMonthly: 13.20,
+    annualTotal: 158.40,
+    description: "For investors managing multiple assets and strategies.",
     features: [
-      "3 active DCA strategies",
-      "Up to 4 accumulation zones",
-      "Live backtest (60 days)",
-      "Jupiter, Uniswap, PancakeSwap",
+      "3 active strategies",
+      "Up to 5 assets",
+      "4 accumulation zones / strategy",
+      "Multi-chain",
+      "Jupiter, Uniswap & PancakeSwap",
+      "Dynamic allocation",
+      "Strategy history",
+      "30-day backtesting",
+      "Paper trading",
+      "Advanced DCA controls",
       "Email support",
     ],
     featured: false,
@@ -45,19 +58,26 @@ const PLANS = [
   {
     id: "pro",
     name: "Pro",
-    monthlyPrice: null,
-    annualPrice: null,
-    annualTotal: 99.99,
-    yearOnly: true,
+    monthlyPrice: 29.99,
+    annualMonthly: 24.60,
+    annualTotal: 295.20,
+    description: "For serious traders building advanced automated strategies.",
     features: [
-      "Unlimited DCA strategies",
+      "Unlimited strategies",
+      "Unlimited assets",
       "Unlimited accumulation zones",
-      "Live backtest (60 days)",
-      "All DEX integrations",
-      "Dynamic allocation",
+      "All supported DEXs & CEXs",
+      "Advanced Strategy Builder",
+      "Dynamic capital allocation",
+      "Advanced risk management",
       "Smart exit rules",
+      "Advanced backtesting",
+      "Paper trading",
+      "Portfolio analytics",
+      "Full trade history",
+      "Priority execution",
       "Priority support",
-      "Early access to new features",
+      "Early access",
     ],
     featured: true,
   },
@@ -65,6 +85,7 @@ const PLANS = [
     id: "enterprise",
     name: "Enterprise",
     custom: true,
+    description: "Custom infrastructure and integrations for teams and institutions.",
     features: [
       "Everything in Pro",
       "Custom DEX integration",
@@ -87,9 +108,9 @@ export default function PricingPage() {
         @import url('https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,500;0,600;1,500&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
         .plan-card { background: #111111; border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 28px; display: flex; flex-direction: column; }
         .plan-card.featured { background: #1a1a1a; border-color: rgba(192,192,192,0.3); }
-        .feature-item { display: flex; align-items: center; gap: 10px; font-family: 'Inter', sans-serif; font-size: 13px; color: rgba(230,230,230,0.7); margin-bottom: 9px; }
-        .feature-check { color: #C0C0C0; font-size: 12px; flex-shrink: 0; }
-        .toggle-pill { display: flex; align-items: center; gap: 0; background: #1a1a1a; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; overflow: hidden; }
+        .feature-item { display: flex; align-items: flex-start; gap: 10px; font-family: 'Inter', sans-serif; font-size: 13px; color: rgba(230,230,230,0.7); margin-bottom: 8px; line-height: 1.5; }
+        .feature-check { color: #C0C0C0; font-size: 12px; flex-shrink: 0; margin-top: 2px; }
+        .toggle-pill { display: flex; align-items: center; background: #1a1a1a; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; overflow: hidden; }
         .toggle-opt { padding: 8px 20px; font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; border: none; transition: all .15s; }
         .toggle-opt.active { background: rgba(192,192,192,0.15); color: #F2F2F2; }
         .toggle-opt.inactive { background: transparent; color: rgba(230,230,230,0.4); }
@@ -115,11 +136,6 @@ export default function PricingPage() {
               <button className={`toggle-opt ${!annual ? "active" : "inactive"}`} onClick={() => setAnnual(false)}>Monthly</button>
               <button className={`toggle-opt ${annual ? "active" : "inactive"}`} onClick={() => setAnnual(true)}>Annual</button>
             </div>
-            {annual && (
-              <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 11, color: C.silver, background: "rgba(192,192,192,0.08)", border: "1px solid rgba(192,192,192,0.2)", borderRadius: 20, padding: "3px 10px" }}>
-                Save up to 20%
-              </span>
-            )}
           </div>
         </div>
 
@@ -133,31 +149,41 @@ export default function PricingPage() {
                 </div>
               )}
 
-              <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 11, textTransform: "uppercase", letterSpacing: "0.1em", color: C.textFaint, marginBottom: 16 }}>{plan.name}</div>
+              {/* Plan name */}
+              <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 11, textTransform: "uppercase", letterSpacing: "0.1em", color: C.textFaint, marginBottom: 12 }}>
+                {plan.name}
+              </div>
 
-              <div style={{ marginBottom: 24 }}>
+              {/* Description */}
+              <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 13, color: C.textDim, marginBottom: 20, lineHeight: 1.5, minHeight: 40 }}>
+                {plan.description}
+              </div>
+
+              {/* Price */}
+              <div style={{ marginBottom: 24, paddingBottom: 20, borderBottom: `1px solid ${C.border}` }}>
                 {plan.custom ? (
                   <>
                     <span style={{ fontFamily: "'Newsreader', serif", fontSize: 38, fontWeight: 600, color: C.silverBright }}>Custom</span>
                     <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 12, color: C.textFaint, marginTop: 4 }}>Tailored to your needs</div>
                   </>
-                ) : plan.yearOnly ? (
-                  <>
-                    <span style={{ fontFamily: "'Newsreader', serif", fontSize: 38, fontWeight: 600, color: C.silverBright }}>${plan.annualTotal}</span>
-                    <span style={{ fontFamily: "'Inter', sans-serif", fontSize: 14, color: C.textDim, marginLeft: 6 }}>/year</span>
-                    <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 12, color: C.textFaint, marginTop: 4 }}>≈ $8.33/month</div>
-                  </>
                 ) : (
                   <>
-                    <span style={{ fontFamily: "'Newsreader', serif", fontSize: 38, fontWeight: 600, color: C.silverBright }}>
-                      ${annual ? plan.annualPrice : plan.monthlyPrice}
-                    </span>
-                    <span style={{ fontFamily: "'Inter', sans-serif", fontSize: 14, color: C.textDim, marginLeft: 6 }}>/month</span>
-                    {annual && <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 12, color: C.textFaint, marginTop: 4 }}>Billed ${plan.annualTotal}/year</div>}
+                    <div style={{ display: "flex", alignItems: "baseline", gap: 4 }}>
+                      <span style={{ fontFamily: "'Newsreader', serif", fontSize: 38, fontWeight: 600, color: C.silverBright }}>
+                        ${annual ? plan.annualMonthly.toFixed(2) : plan.monthlyPrice.toFixed(2)}
+                      </span>
+                      <span style={{ fontFamily: "'Inter', sans-serif", fontSize: 14, color: C.textDim }}>/mo</span>
+                    </div>
+                    <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 12, color: C.textFaint, marginTop: 4 }}>
+                      {annual
+                        ? `Billed $${plan.annualTotal.toFixed(2)}/year`
+                        : `$${plan.annualTotal.toFixed(2)}/year billed annually`}
+                    </div>
                   </>
                 )}
               </div>
 
+              {/* Features */}
               <div style={{ flex: 1, marginBottom: 24 }}>
                 {plan.features.map((f, i) => (
                   <div key={i} className="feature-item">
@@ -167,6 +193,7 @@ export default function PricingPage() {
                 ))}
               </div>
 
+              {/* CTA */}
               {plan.custom ? (
                 <a
                   href="mailto:contact@zillaengine.xyz"

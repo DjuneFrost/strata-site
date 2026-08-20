@@ -45,7 +45,7 @@ const NETWORKS = [
     color: "#14F195",
     colorDim: "rgba(20,241,149,0.08)",
     colorBorder: "rgba(20,241,149,0.25)",
-    logo: "https://assets.coingecko.com/coins/images/35809/small/hyperliquid.png",
+    logo: "https://app.pacifica.fi/imgs/tokens/HYPE.svg",
     comingSoon: true,
   },
 ];
@@ -74,7 +74,7 @@ function NetworkCard({ network }) {
             src={network.logo}
             alt={network.name}
             style={{ width: 36, height: 36, borderRadius: "50%", objectFit: "contain" }}
-            onError={e => { e.target.style.display = "none"; }}
+            onError={e => { e.target.src = "https://assets.coingecko.com/coins/images/35809/thumb/hyperliquid.png"; }}
           />
           <div>
             <div style={{ fontFamily: "'Newsreader', serif", fontSize: 18, fontWeight: 600, color: C.silverBright }}>

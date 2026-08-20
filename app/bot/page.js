@@ -17,7 +17,7 @@ const CHAINS = [
   {
     id: "hyperliquid",
     label: "Hyperliquid",
-    logo: "https://assets.coingecko.com/coins/images/35809/small/hyperliquid.png",
+    logo: "https://app.pacifica.fi/imgs/tokens/HYPE.svg",
     color: "#14F195",
     tokens: [
       { label: "HYPE", full: "Hyperliquid (HYPE)", logo: "https://assets.coingecko.com/coins/images/35809/small/hyperliquid.png" },
@@ -139,6 +139,8 @@ export default function BotPage() {
   const [exitDropValue, setExitDropValue] = useState(0);
   const [exitMaxBuys, setExitMaxBuys] = useState(false);
   const [exitMaxBuysValue, setExitMaxBuysValue] = useState(0);
+  const [selectedExchange, setSelectedExchange] = useState(null);
+  const [exchangeDropdownOpen, setExchangeDropdownOpen] = useState(false);
 
   const showToast = (msg) => { setToast(msg); setToastVisible(true); setTimeout(() => setToastVisible(false), 3000); };
 
@@ -281,7 +283,8 @@ export default function BotPage() {
         .bot-card { background: ${C.panel}; border: 1px solid ${C.border}; border-radius: 18px; padding: 20px; box-shadow: 0 8px 40px rgba(0,0,0,0.5); margin-bottom: 10px; }
         .bot-input { width: 100%; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; color: #fff; font-family: 'Inter',sans-serif; font-size: 13px; padding: 10px 14px; outline: none; transition: border-color 0.2s; box-sizing: border-box; }
         .bot-input:focus { border-color: rgba(255,255,255,0.25); }
-        .bot-select { width: 100%; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; color: #fff; font-family: 'Inter',sans-serif; font-size: 13px; padding: 10px 14px; outline: none; appearance: none; box-sizing: border-box; cursor: pointer; }
+        .bot-select { width: 100%; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; color: #fff; font-family: 'Inter',sans-serif; font-size: 13px; padding: 10px 14px; outline: none; appearance: none; box-sizing: border-box; cursor: pointer; color-scheme: dark; }
+        .bot-select option { background: #1a1a1a; color: #fff; }
         .bot-label { font-size: 12px; color: rgba(255,255,255,0.5); display: block; margin-bottom: 4px; font-weight: 500; }
         .bot-sublabel { font-size: 11px; color: rgba(255,255,255,0.25); display: block; margin-bottom: 8px; line-height: 1.4; }
         .bot-section-title { font-family: 'Inter',sans-serif; font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.7); margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
@@ -562,6 +565,89 @@ export default function BotPage() {
             </div>
           )}
         </div>
+        
+{/* Exchange Selector */}
+<div className="bot-card" style={{ marginBottom: 10 }}>
+  <div className="bot-section-title">
+    <Settings size={14} /> Execution — Choose your Exchange
+  </div>
+  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+
+{/* DEX */}
+<div>
+  <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 11, textTransform: "uppercase", letterSpacing: "0.08em", color: C.textFaint, marginBottom: 10 }}>DEX</div>
+  {[
+    { id: "jupiter", name: "Jupiter", logo: "https://jup.ag/favicon.ico", chain: "Solana", chains: ["solana"] },
+    { id: "uniswap", name: "Uniswap", logo: "https://app.uniswap.org/favicon.png", chain: "Ethereum", chains: ["ethereum"] },
+    { id: "pancakeswap", name: "PancakeSwap", logo: "https://pancakeswap.finance/favicon.ico", chain: "BNB Chain", chains: ["bnb"] },
+  ].map(ex => {
+    const available = ex.chains.includes(selectedChain.id);
+    return (
+      <div
+        key={ex.id}
+        onClick={() => available && setSelectedExchange(selectedExchange?.id === ex.id ? null : ex)}
+        style={{
+          display: "flex", alignItems: "center", gap: 12, padding: "10px 14px",
+          borderRadius: 10, marginBottom: 6,
+          cursor: available ? "pointer" : "not-allowed",
+          opacity: available ? 1 : 0.35,
+          background: selectedExchange?.id === ex.id ? "rgba(192,192,192,0.08)" : "rgba(255,255,255,0.02)",
+          border: `1px solid ${selectedExchange?.id === ex.id ? "rgba(192,192,192,0.35)" : "rgba(255,255,255,0.07)"}`,
+          transition: "all .15s",
+        }}
+      >
+        <img src={ex.logo} style={{ width: 24, height: 24, borderRadius: 6, objectFit: "contain" }} alt={ex.name} onError={e => { e.target.style.display = "none"; }} />
+        <div>
+          <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 13, fontWeight: 600, color: selectedExchange?.id === ex.id ? C.silverBright : C.textDim }}>{ex.name}</div>
+          <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 10, color: C.textFaint }}>{ex.chain}</div>
+        </div>
+        {!available && <span style={{ marginLeft: "auto", fontSize: 10, color: C.textFaint, fontFamily: "'IBM Plex Mono', monospace" }}>N/A</span>}
+        {selectedExchange?.id === ex.id && available && <span style={{ marginLeft: "auto", color: C.silver, fontSize: 12 }}>✓</span>}
+      </div>
+    );
+  })}
+</div>
+
+{/* CEX */}
+<div>
+  <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 11, textTransform: "uppercase", letterSpacing: "0.08em", color: C.textFaint, marginBottom: 10 }}>CEX</div>
+  {[
+    { id: "bybit", name: "Bybit", logo: "https://www.bybit.com/favicon.ico", chain: "CEX", chains: ["solana", "hyperliquid"] },
+  ].map(ex => {
+    const available = ex.chains.includes(selectedChain.id);
+    return (
+      <div
+        key={ex.id}
+        onClick={() => available && setSelectedExchange(selectedExchange?.id === ex.id ? null : ex)}
+        style={{
+          display: "flex", alignItems: "center", gap: 12, padding: "10px 14px",
+          borderRadius: 10, marginBottom: 6,
+          cursor: available ? "pointer" : "not-allowed",
+          opacity: available ? 1 : 0.35,
+          background: selectedExchange?.id === ex.id ? "rgba(192,192,192,0.08)" : "rgba(255,255,255,0.02)",
+          border: `1px solid ${selectedExchange?.id === ex.id ? "rgba(192,192,192,0.35)" : "rgba(255,255,255,0.07)"}`,
+          transition: "all .15s",
+        }}
+      >
+        <img src={ex.logo} style={{ width: 24, height: 24, borderRadius: 6, objectFit: "contain" }} alt={ex.name} onError={e => { e.target.style.display = "none"; }} />
+        <div>
+          <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 13, fontWeight: 600, color: selectedExchange?.id === ex.id ? C.silverBright : C.textDim }}>{ex.name}</div>
+          <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 10, color: C.textFaint }}>{ex.chain}</div>
+        </div>
+        {!available && <span style={{ marginLeft: "auto", fontSize: 10, color: C.textFaint, fontFamily: "'IBM Plex Mono', monospace" }}>N/A</span>}
+        {selectedExchange?.id === ex.id && available && <span style={{ marginLeft: "auto", color: C.silver, fontSize: 12 }}>✓</span>}
+      </div>
+    );
+  })}
+</div>
+
+  </div>
+  {selectedExchange && (
+    <div style={{ marginTop: 12, padding: "10px 14px", background: "rgba(192,192,192,0.05)", border: "1px solid rgba(192,192,192,0.15)", borderRadius: 10, fontFamily: "'Inter', sans-serif", fontSize: 12, color: C.textDim }}>
+      Strategy will execute via <span style={{ color: C.silverBright, fontWeight: 600 }}>{selectedExchange.name}</span>
+    </div>
+  )}
+</div>
 
         {/* Backtest */}
         <button onClick={handleBacktest} style={{ width: "100%", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(192,192,192,0.3)", borderRadius: 12, color: C.silverBright, fontFamily: "'Inter', sans-serif", fontSize: 14, fontWeight: 600, padding: 14, cursor: "pointer", marginBottom: 10 }}>
