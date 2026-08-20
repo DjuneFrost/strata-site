@@ -29,6 +29,20 @@ const CEXES = [
     docsUrl: "https://www.bybit.com/app/user/api-management",
     comingSoon: false,
   },
+  {
+    id: "backpack",
+    name: "Backpack",
+    logo: "https://backpack.exchange/favicon.ico",
+    color: "#E33B3B",
+    colorDim: "rgba(227,59,59,0.08)",
+    colorBorder: "rgba(227,59,59,0.25)",
+    fields: [
+      { key: "apiKey", label: "API Key", placeholder: "Enter your Backpack API Key" },
+      { key: "secretKey", label: "Secret Key", placeholder: "Enter your Backpack Secret Key" },
+    ],
+    docsUrl: "https://backpack.exchange/portfolio/settings",
+    comingSoon: false,
+  },
 ];
 
 function CexCard({ cex }) {

@@ -1,19 +1,20 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
-import { Target, Zap, Save, BarChart2, Play, Settings, Shield, TrendingDown, TrendingUp, Hash, AlertTriangle } from "lucide-react";
+import { Target, Zap, Save, BarChart2, Play, Settings, TrendingDown, TrendingUp, Hash, AlertTriangle, ChevronDown, ChevronUp } from "lucide-react";
 
 // ---- Chains & tokens ----
 const CHAINS = [
-  {
-    id: "solana",
-    label: "Solana",
-    logo: "https://assets.coingecko.com/coins/images/4128/small/solana.png",
-    color: "#9945FF",
-    tokens: [
-      { label: "SOL", full: "Solana (SOL)", logo: "https://assets.coingecko.com/coins/images/4128/small/solana.png" },
-    ],
-    comingSoon: false,
-  },
+{
+  id: "solana",
+  label: "Solana",
+  logo: "https://assets.coingecko.com/coins/images/4128/small/solana.png",
+  color: "#9945FF",
+tokens: [
+  { label: "SOL", full: "Solana (SOL)", logo: "https://assets.coingecko.com/coins/images/4128/small/solana.png" },
+  { label: "PUMP", full: "Pump.fun (PUMP)", logo: "https://app.pacifica.fi/imgs/tokens/PUMP.svg" },
+],
+  comingSoon: false,
+},
   {
     id: "hyperliquid",
     label: "Hyperliquid",
@@ -329,7 +330,7 @@ export default function BotPage() {
                 >
                   <img src={selectedChain.logo} style={{ width: 26, height: 26, borderRadius: "50%" }} alt={selectedChain.label} />
                   <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 14, fontWeight: 600, color: C.silverBright }}>{selectedChain.label}</span>
-                  <span style={{ color: C.textFaint, fontSize: 10 }}>{chainDropdownOpen ? "▲" : "▼"}</span>
+                  <span style={{ color: C.textFaint, fontSize: 10 }}>{chainDropdownOpen ? <ChevronUp size={12} /> : <ChevronDown size={12} />}</span>
                 </button>
                 {chainDropdownOpen && (
                   <div style={{ position: "absolute", top: 46, left: 0, background: "#1a1a1a", border: "1px solid rgba(192,192,192,0.2)", borderRadius: 10, overflow: "hidden", zIndex: 50, minWidth: 200, boxShadow: "0 8px 32px rgba(0,0,0,0.6)" }}>
@@ -405,7 +406,7 @@ export default function BotPage() {
                   <img src={selectedToken.logo} style={{ width: 18, height: 18, borderRadius: "50%" }} alt={selectedToken.label} />
                   {selectedToken.full}
                 </div>
-                <span style={{ color: C.textFaint, fontSize: 10 }}>{tokenDropdownOpen ? "▲" : "▼"}</span>
+                <span style={{ color: C.textFaint, fontSize: 10 }}>{tokenDropdownOpen ? <ChevronUp size={12} /> : <ChevronDown size={12} />}</span>
               </button>
               {tokenDropdownOpen && (
                 <div style={{ position: "absolute", top: "100%", left: 0, right: 0, background: "#1a1a1a", border: "1px solid rgba(192,192,192,0.2)", borderRadius: 10, overflow: "hidden", zIndex: 50, boxShadow: "0 8px 32px rgba(0,0,0,0.6)", marginTop: 4 }}>
@@ -613,6 +614,7 @@ export default function BotPage() {
   <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 11, textTransform: "uppercase", letterSpacing: "0.08em", color: C.textFaint, marginBottom: 10 }}>CEX</div>
   {[
     { id: "bybit", name: "Bybit", logo: "https://www.bybit.com/favicon.ico", chain: "CEX", chains: ["solana", "hyperliquid"] },
+{ id: "backpack", name: "Backpack", logo: "https://backpack.exchange/favicon.ico", chain: "CEX", chains: ["solana"] },
   ].map(ex => {
     const available = ex.chains.includes(selectedChain.id);
     return (
