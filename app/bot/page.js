@@ -1,6 +1,9 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 import { Target, Zap, Save, BarChart2, Play, Settings, TrendingDown, TrendingUp, Hash, AlertTriangle, ChevronDown, ChevronUp } from "lucide-react";
+import { supabase } from "../../lib/supabase";
+import { usePrivy } from "@privy-io/react-auth";
+console.log("SUPABASE URL:", process.env.NEXT_PUBLIC_SUPABASE_URL);
 
 // ---- Chains & tokens ----
 const CHAINS = [
@@ -125,6 +128,7 @@ export default function BotPage() {
   const [backtestResult, setBacktestResult] = useState(null);
   const [savedStrategies, setSavedStrategies] = useState([]);
   const [saving, setSaving] = useState(false);
+  const { user } = usePrivy();
 
   // Chain & token selectors
   const [selectedChain, setSelectedChain] = useState(CHAINS[0]);
@@ -205,16 +209,36 @@ export default function BotPage() {
     return pctFromHigh >= z.pullback;
   });
 
-  const handleSaveStrategy = () => {
-    if (!strategyName) { showToast("Please enter a strategy name first."); return; }
-    setSaving(true);
-    const payload = { name: strategyName, chain: selectedChain.label, token: selectedToken.label, capital: Number(capital), exposure: Number(exposure), zones, status: "preview", created_at: new Date().toISOString() };
-    setTimeout(() => {
-      setSavedStrategies(prev => [payload, ...prev]);
-      showToast("✅ Strategy saved!");
-      setSaving(false);
-    }, 400);
-  };
+const handleSaveStrategy = async () => {
+  if (!strategyName) { showToast("Please enter a strategy name first."); return; }
+  setSaving(true);
+  try {
+    const { data, error } = await supabase
+      .from("strategies")
+      .insert({
+        privy_id: user?.id,
+        name: strategyName,
+        chain: selectedChain.label,
+        token: selectedToken.label,
+        capital: Number(capital),
+        exposure: Number(exposure),
+        zones: zones,
+        exchange: selectedExchange?.name || null,
+        status: "draft",
+      })
+      .select()
+      .single();
+
+    if (error) throw error;
+    setSavedStrategies(prev => [data, ...prev]);
+    showToast("Strategy saved!");
+  } catch (err) {
+    console.error(err);
+    showToast("Error saving strategy.");
+  } finally {
+    setSaving(false);
+  }
+};
 
   const handleBacktest = async () => {
     setBacktestLoading(true); setShowBacktest(true); setBacktestResult(null);
