@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { usePrivy } from "@privy-io/react-auth";
+import { Lock, ChevronDown, ChevronUp } from "lucide-react";
 
 const C = {
   panel: "#111111",
@@ -27,7 +28,6 @@ const CEXES = [
       { key: "secretKey", label: "Secret Key", placeholder: "Enter your Bybit Secret Key" },
     ],
     docsUrl: "https://www.bybit.com/app/user/api-management",
-    comingSoon: false,
   },
   {
     id: "backpack",
@@ -41,12 +41,12 @@ const CEXES = [
       { key: "secretKey", label: "Secret Key", placeholder: "Enter your Backpack Secret Key" },
     ],
     docsUrl: "https://backpack.exchange/portfolio/settings",
-    comingSoon: false,
   },
 ];
 
 function CexCard({ cex }) {
   const [connected, setConnected] = useState(false);
+  const [expanded, setExpanded] = useState(false);
   const [showKeys, setShowKeys] = useState(false);
   const [saving, setSaving] = useState(false);
   const [values, setValues] = useState({});
@@ -59,20 +59,21 @@ function CexCard({ cex }) {
 
   const handleSave = () => {
     const allFilled = cex.fields.every(f => values[f.key]?.trim());
-    if (!allFilled) { showToast("⚠️ Please fill all fields."); return; }
+    if (!allFilled) { showToast("Please fill all fields."); return; }
     setSaving(true);
-    // TODO: send API keys securely to your backend
     setTimeout(() => {
       setSaving(false);
       setConnected(true);
-      showToast("✅ Connected to " + cex.name + "!");
+      setExpanded(false);
+      showToast("Connected to " + cex.name + "!");
     }, 800);
   };
 
   const handleDisconnect = () => {
     setConnected(false);
     setValues({});
-    showToast("🔌 Disconnected from " + cex.name + ".");
+    setExpanded(false);
+    showToast("Disconnected from " + cex.name + ".");
   };
 
   return (
@@ -128,21 +129,19 @@ function CexCard({ cex }) {
       </div>
 
       {/* Body */}
-      <div style={{ padding: "24px" }}>
+      <div style={{ padding: "0 24px 20px" }}>
         {connected ? (
-          <>
-            {/* Connected state */}
+          <div style={{ paddingTop: 20 }}>
             <div style={{
               background: "rgba(111,207,151,0.05)", border: "1px solid rgba(111,207,151,0.15)",
-              borderRadius: 10, padding: "14px 16px", marginBottom: 20,
+              borderRadius: 10, padding: "14px 16px", marginBottom: 16,
               fontFamily: "'Inter', sans-serif", fontSize: 13, color: C.textDim, lineHeight: 1.6,
             }}>
-              ✓ Your API keys are saved and encrypted. The bot can now execute trades on {cex.name}.
+              Your API keys are saved and encrypted. The bot can now execute trades on {cex.name}.
             </div>
-
             <div style={{ display: "flex", gap: 10 }}>
               <button
-                onClick={() => setConnected(false)}
+                onClick={() => { setConnected(false); setExpanded(true); }}
                 style={{
                   flex: 1, padding: "11px", borderRadius: 8,
                   background: "transparent", border: "1px solid rgba(255,255,255,0.15)",
@@ -164,81 +163,106 @@ function CexCard({ cex }) {
                 Disconnect
               </button>
             </div>
-          </>
+          </div>
         ) : (
           <>
-            {/* Security notice */}
-            <div style={{
-              display: "flex", alignItems: "flex-start", gap: 10,
-              background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.07)",
-              borderRadius: 10, padding: "12px 14px", marginBottom: 20,
-            }}>
-              <span style={{ fontSize: 14, flexShrink: 0 }}>🔒</span>
-              <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 12, color: C.textFaint, lineHeight: 1.6 }}>
-                Enable <strong style={{ color: C.text }}>Read + Trade permissions only</strong> — never enable withdrawals. Your keys are encrypted and stored securely.{" "}
-                <a href={cex.docsUrl} target="_blank" rel="noreferrer" style={{ color: C.silver, textDecoration: "underline" }}>
-                  Get your API keys →
-                </a>
-              </div>
-            </div>
-
-            {/* Fields */}
-            <div style={{ display: "flex", flexDirection: "column", gap: 14, marginBottom: 16 }}>
-              {cex.fields.map(field => (
-                <div key={field.key}>
-                  <label style={{
-                    fontFamily: "'Inter', sans-serif", fontSize: 11,
-                    textTransform: "uppercase", letterSpacing: "0.06em",
-                    color: C.textFaint, display: "block", marginBottom: 7,
-                  }}>
-                    {field.label}
-                  </label>
-                  <input
-                    type={showKeys ? "text" : "password"}
-                    placeholder={field.placeholder}
-                    value={values[field.key] || ""}
-                    onChange={e => setValues(v => ({ ...v, [field.key]: e.target.value }))}
-                    style={{
-                      width: "100%", background: "#0a0a0a",
-                      border: "1px solid rgba(255,255,255,0.1)", borderRadius: 10,
-                      color: C.silverBright, fontFamily: "'IBM Plex Mono', monospace",
-                      fontSize: 13, padding: "11px 14px", outline: "none", boxSizing: "border-box",
-                      transition: "border-color .15s",
-                    }}
-                  />
-                </div>
-              ))}
-            </div>
-
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
-              <label style={{
-                display: "flex", alignItems: "center", gap: 8, cursor: "pointer",
-                fontFamily: "'Inter', sans-serif", fontSize: 12, color: C.textFaint,
-              }}>
-                <input
-                  type="checkbox"
-                  checked={showKeys}
-                  onChange={e => setShowKeys(e.target.checked)}
-                  style={{ accentColor: C.silver }}
-                />
-                Show keys
-              </label>
-            </div>
-
+            {/* Toggle button */}
             <button
-              onClick={handleSave}
-              disabled={saving}
+              onClick={() => setExpanded(!expanded)}
               style={{
-                width: "100%", padding: "12px", borderRadius: 8,
-                background: saving ? "rgba(255,255,255,0.06)" : "linear-gradient(135deg,#E8E8E8,#B0B0B0)",
-                border: "none",
-                color: saving ? C.textFaint : "#0A0A0A",
-                fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: 14,
-                cursor: saving ? "not-allowed" : "pointer", transition: "all .2s",
+                width: "100%", display: "flex", alignItems: "center", justifyContent: "space-between",
+                padding: "16px 0", background: "transparent", border: "none",
+                borderTop: `1px solid ${C.border}`, color: C.textDim,
+                fontFamily: "'Inter', sans-serif", fontSize: 13, fontWeight: 600,
+                cursor: "pointer", marginTop: 4,
               }}
             >
-              {saving ? "Connecting..." : `Connect to ${cex.name}`}
+              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <Lock size={13} color="rgba(192,192,192,0.6)" />
+                Connect API Keys
+              </div>
+              {expanded
+                ? <ChevronUp size={14} color="rgba(192,192,192,0.6)" />
+                : <ChevronDown size={14} color="rgba(192,192,192,0.6)" />
+              }
             </button>
+
+            {/* Collapsible form */}
+            {expanded && (
+              <div>
+                {/* Security notice */}
+                <div style={{
+                  display: "flex", alignItems: "flex-start", gap: 10,
+                  background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.07)",
+                  borderRadius: 10, padding: "12px 14px", marginBottom: 18,
+                }}>
+                  <Lock size={13} color="rgba(192,192,192,0.5)" style={{ flexShrink: 0, marginTop: 1 }} />
+                  <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 12, color: C.textFaint, lineHeight: 1.6 }}>
+                    Enable <strong style={{ color: C.text }}>Read + Trade permissions only</strong> — never enable withdrawals. Your keys are encrypted and stored securely.{" "}
+                    <a href={cex.docsUrl} target="_blank" rel="noreferrer" style={{ color: C.silver, textDecoration: "underline" }}>
+                      Get your API keys →
+                    </a>
+                  </div>
+                </div>
+
+                {/* Fields */}
+                <div style={{ display: "flex", flexDirection: "column", gap: 14, marginBottom: 16 }}>
+                  {cex.fields.map(field => (
+                    <div key={field.key}>
+                      <label style={{
+                        fontFamily: "'Inter', sans-serif", fontSize: 11,
+                        textTransform: "uppercase", letterSpacing: "0.06em",
+                        color: C.textFaint, display: "block", marginBottom: 7,
+                      }}>
+                        {field.label}
+                      </label>
+                      <input
+                        type={showKeys ? "text" : "password"}
+                        placeholder={field.placeholder}
+                        value={values[field.key] || ""}
+                        onChange={e => setValues(v => ({ ...v, [field.key]: e.target.value }))}
+                        style={{
+                          width: "100%", background: "#0a0a0a",
+                          border: "1px solid rgba(255,255,255,0.1)", borderRadius: 10,
+                          color: C.silverBright, fontFamily: "'IBM Plex Mono', monospace",
+                          fontSize: 13, padding: "11px 14px", outline: "none", boxSizing: "border-box",
+                        }}
+                      />
+                    </div>
+                  ))}
+                </div>
+
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
+                  <label style={{
+                    display: "flex", alignItems: "center", gap: 8, cursor: "pointer",
+                    fontFamily: "'Inter', sans-serif", fontSize: 12, color: C.textFaint,
+                  }}>
+                    <input
+                      type="checkbox"
+                      checked={showKeys}
+                      onChange={e => setShowKeys(e.target.checked)}
+                      style={{ accentColor: C.silver }}
+                    />
+                    Show keys
+                  </label>
+                </div>
+
+                <button
+                  onClick={handleSave}
+                  disabled={saving}
+                  style={{
+                    width: "100%", padding: "12px", borderRadius: 8,
+                    background: saving ? "rgba(255,255,255,0.06)" : "linear-gradient(135deg,#E8E8E8,#B0B0B0)",
+                    border: "none",
+                    color: saving ? C.textFaint : "#0A0A0A",
+                    fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: 14,
+                    cursor: saving ? "not-allowed" : "pointer",
+                  }}
+                >
+                  {saving ? "Connecting..." : `Connect to ${cex.name}`}
+                </button>
+              </div>
+            )}
           </>
         )}
       </div>
@@ -263,7 +287,7 @@ export default function CexPage() {
 
   if (!authenticated) {
     return (
-      <div style={{ padding: "32px 4vw 60px", maxWidth: 1400, margin: "0 auto", color: C.text }}>
+      <div style={{ padding: "32px 4vw 60px", maxWidth: 1400, margin: "0 auto", color: "#E6E6E6" }}>
         <div style={{ background: C.panel, border: `1px solid ${C.border}`, borderRadius: 12, padding: 32, textAlign: "center" }}>
           <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 14, color: C.textFaint }}>
             Sign in to manage your CEX connections.
@@ -295,8 +319,9 @@ export default function CexPage() {
 
         {/* Security tips */}
         <div style={{ background: C.panel, border: `1px solid ${C.border}`, borderRadius: 12, padding: "20px 24px", marginTop: 24, maxWidth: 860 }}>
-          <div style={{ fontFamily: "'Inter', sans-serif", fontWeight: 600, fontSize: 13, color: C.silverBright, marginBottom: 12 }}>
-            🔐 Security best practices
+          <div style={{ display: "flex", alignItems: "center", gap: 8, fontFamily: "'Inter', sans-serif", fontWeight: 600, fontSize: 13, color: C.silverBright, marginBottom: 12 }}>
+            <Lock size={14} color={C.silver} />
+            Security best practices
           </div>
           {[
             "Enable Spot Trading permissions only — never enable withdrawals.",

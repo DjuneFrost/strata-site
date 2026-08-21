@@ -4,26 +4,50 @@ import { Target, Zap, Save, BarChart2, Play, Settings, TrendingDown, TrendingUp,
 
 // ---- Chains & tokens ----
 const CHAINS = [
-{
-  id: "solana",
-  label: "Solana",
-  logo: "https://assets.coingecko.com/coins/images/4128/small/solana.png",
-  color: "#9945FF",
-tokens: [
-  { label: "SOL", full: "Solana (SOL)", logo: "https://assets.coingecko.com/coins/images/4128/small/solana.png" },
-  { label: "PUMP", full: "Pump.fun (PUMP)", logo: "https://app.pacifica.fi/imgs/tokens/PUMP.svg" },
-],
-  comingSoon: false,
-},
+  {
+    id: "solana",
+    label: "Solana",
+    logo: "https://assets.coingecko.com/coins/images/4128/small/solana.png",
+    color: "#9945FF",
+    tokens: [
+      { label: "SOL", full: "Solana (SOL)", logo: "https://assets.coingecko.com/coins/images/4128/small/solana.png" },
+      { label: "PUMP", full: "Pump.fun (PUMP)", logo: "https://app.pacifica.fi/imgs/tokens/PUMP.svg" },
+    ],
+    comingSoon: false,
+    dexOnly: false,
+  },
+  {
+    id: "bitcoin",
+    label: "Bitcoin",
+    logo: "https://assets.coingecko.com/coins/images/1/small/bitcoin.png",
+    color: "#F7931A",
+    tokens: [
+      { label: "BTC", full: "Bitcoin (BTC)", logo: "https://assets.coingecko.com/coins/images/1/small/bitcoin.png" },
+    ],
+    comingSoon: false,
+    cexOnly: true,
+  },
+  {
+    id: "ethereum",
+    label: "Ethereum",
+    logo: "https://assets.coingecko.com/coins/images/279/small/ethereum.png",
+    color: "#627EEA",
+    tokens: [
+      { label: "ETH", full: "Ethereum (ETH)", logo: "https://assets.coingecko.com/coins/images/279/small/ethereum.png" },
+    ],
+    comingSoon: false,
+    cexOnly: true,
+  },
   {
     id: "hyperliquid",
     label: "Hyperliquid",
     logo: "https://app.pacifica.fi/imgs/tokens/HYPE.svg",
     color: "#14F195",
     tokens: [
-      { label: "HYPE", full: "Hyperliquid (HYPE)", logo: "https://assets.coingecko.com/coins/images/35809/small/hyperliquid.png" },
+      { label: "HYPE", full: "Hyperliquid (HYPE)", logo: "https://app.pacifica.fi/imgs/tokens/HYPE.svg" },
     ],
-    comingSoon: true,
+    comingSoon: false,
+    cexOnly: true,
   },
 ];
 
@@ -582,7 +606,7 @@ export default function BotPage() {
     { id: "uniswap", name: "Uniswap", logo: "https://app.uniswap.org/favicon.png", chain: "Ethereum", chains: ["ethereum"] },
     { id: "pancakeswap", name: "PancakeSwap", logo: "https://pancakeswap.finance/favicon.ico", chain: "BNB Chain", chains: ["bnb"] },
   ].map(ex => {
-    const available = ex.chains.includes(selectedChain.id);
+    const available = !selectedChain.cexOnly && ex.chains.includes(selectedChain.id);
     return (
       <div
         key={ex.id}
@@ -613,8 +637,8 @@ export default function BotPage() {
 <div>
   <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 11, textTransform: "uppercase", letterSpacing: "0.08em", color: C.textFaint, marginBottom: 10 }}>CEX</div>
   {[
-    { id: "bybit", name: "Bybit", logo: "https://www.bybit.com/favicon.ico", chain: "CEX", chains: ["solana", "hyperliquid"] },
-{ id: "backpack", name: "Backpack", logo: "https://backpack.exchange/favicon.ico", chain: "CEX", chains: ["solana"] },
+    { id: "bybit", name: "Bybit", logo: "https://www.bybit.com/favicon.ico", chain: "CEX", chains: ["solana", "hyperliquid", "bitcoin", "ethereum"] },
+{ id: "backpack", name: "Backpack", logo: "https://backpack.exchange/favicon.ico", chain: "CEX", chains: ["solana", "hyperliquid", "bitcoin", "ethereum"] },
   ].map(ex => {
     const available = ex.chains.includes(selectedChain.id);
     return (
