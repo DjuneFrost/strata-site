@@ -32,7 +32,7 @@ const CEXES = [
   {
     id: "backpack",
     name: "Backpack",
-    logo: "https://backpack.exchange/favicon.ico",
+    logo: "https://backpack.exchange/coins/bp.svg",
     color: "#E33B3B",
     colorDim: "rgba(227,59,59,0.08)",
     colorBorder: "rgba(227,59,59,0.25)",

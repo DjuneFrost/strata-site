@@ -638,7 +638,7 @@ export default function BotPage() {
   <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 11, textTransform: "uppercase", letterSpacing: "0.08em", color: C.textFaint, marginBottom: 10 }}>CEX</div>
   {[
     { id: "bybit", name: "Bybit", logo: "https://www.bybit.com/favicon.ico", chain: "CEX", chains: ["solana", "hyperliquid", "bitcoin", "ethereum"] },
-{ id: "backpack", name: "Backpack", logo: "https://backpack.exchange/favicon.ico", chain: "CEX", chains: ["solana", "hyperliquid", "bitcoin", "ethereum"] },
+{ id: "backpack", name: "Backpack", logo: "https://backpack.exchange/coins/bp.svg", chain: "CEX", chains: ["solana", "hyperliquid", "bitcoin", "ethereum"] },
   ].map(ex => {
     const available = ex.chains.includes(selectedChain.id);
     return (

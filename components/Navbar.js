@@ -9,7 +9,6 @@ import AccountModal from "./AccountModal";
 const NAV_ITEMS = [
   { href: "/dashboard", label: "Dashboard" },
   { href: "/bot", label: "DCA Bot" },
-  { href: "/wallet", label: "Wallet" },
   { href: "/portfolio", label: "Portfolio" },
 ];
 
